@@ -190,6 +190,8 @@ Objective 1 — typing and comparison — is complete.
 
 A second objective is in progress: auditing per-allele training data coverage in peptide–MHC binding predictors for alleles common in this population. `results/mhcflurry_training_counts.csv` is a partial result and its interpretation is not yet settled.
 
+**Related work:** [luad-deg-analysis](https://github.com/dkhoi2505/luad-deg-analysis) — differential expression in lung adenocarcinoma, including an MHC class I antigen presentation panel. Both repositories approach antigen presentation from opposite ends: one in tumour tissue, one at the population level.
+
 ---
 
 ## Citation
