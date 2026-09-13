@@ -1,0 +1,32 @@
+# Du lieu tho - tai lai tu ENA bang scripts/01_fetch.sh
+data/raw/
+data/clean/
+data/sub/
+*.fastq.gz
+*.fq.gz
+
+# Ket qua tho OptiType - tai tao duoc
+results/main/
+results/pilot/
+results/ladder/
+results/seedtest/
+results/beta/
+results/beta_rev/
+results/beta_experiment/
+*.pdf
+*.bam
+
+# Bang genotype gan voi accession - chi cong bo ban an danh trong public/
+results/genotypes_consensus.csv
+results/genotypes_by_seed.csv
+
+# Bang anh xa accession -> ma an danh: GIU LOCAL
+data/sample_mapping.csv
+
+# Log
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

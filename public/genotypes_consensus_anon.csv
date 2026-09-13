@@ -1,0 +1,102 @@
+sample,n_seed,read_min,read_max,A,A_on_dinh,A_khac,B,B_on_dinh,B_khac,C,C_on_dinh,C_khac,so_locus_bat_on,tin_cay
+sample_001,3,1108,1195,A*02:07 A*11:01,True,,B*08:01 B*18:01,True,,C*07:02 C*07:04,True,,0,cao
+sample_002,3,884,915,A*11:01 A*33:03,True,,B*13:01 B*58:01,True,,C*03:02 C*03:04,True,,0,cao
+sample_003,3,680,731,A*02:01 A*24:02,False,A*02:06 A*24:28,B*35:05 B*40:01,True,,C*03:04 C*04:01,True,,1,trung binh
+sample_004,3,1445,1456,A*11:01 A*24:02,True,,B*15:02 B*35:03,True,,C*04:01 C*08:01,True,,0,cao
+sample_005,3,1236,1281,A*24:02 A*33:03,True,,B*35:05 B*58:01,True,,C*03:02 C*04:01,True,,0,cao
+sample_006,3,1162,1223,A*24:03 A*33:03,True,,B*15:12 B*44:03,True,,C*03:03 C*07:06,True,,0,cao
+sample_007,3,900,920,A*11:02 A*24:02,False,A*11:02 A*24:63,B*27:06 B*40:01,True,,C*03:04 C*07:02,False,C*03:03 C*07:02,2,thap
+sample_008,3,631,688,A*02:12 A*24:02,False,A*02:44 A*24:08,B*38:02 B*40:49,False,B*39:02 B*40:01,C*03:03 C*07:02,False,C*03:02 C*07:02 | C*03:32 C*07:02,3,thap
+sample_009,3,921,938,A*26:01 A*29:01,True,,B*15:11 B*55:02,True,,C*01:02 C*03:03,True,,0,cao
+sample_010,3,821,869,A*02:03 A*29:01,True,,B*07:05 B*38:02,True,,C*07:02 C*15:05,True,,0,cao
+sample_011,3,1163,1238,A*02:03 A*24:02,True,,B*38:02 B*52:01,True,,C*07:02 C*12:02,True,,0,cao
+sample_012,3,1046,1114,A*02:07 A*24:02,True,,B*15:02 B*27:06,True,,C*03:04 C*08:01,True,,0,cao
+sample_013,3,762,828,A*02:07 A*33:03,True,,B*13:01 B*51:01,True,,C*07:02 C*14:02,True,,0,cao
+sample_014,3,975,1053,A*24:07 A*26:01,True,,B*35:05 B*46:01,True,,C*01:02 C*04:01,True,,0,cao
+sample_015,3,1257,1391,A*24:02 A*33:03,True,,B*15:02 B*56:04,True,,C*01:02 C*03:04,True,,0,cao
+sample_016,3,1288,1355,A*11:01 A*24:02,True,,B*15:25 B*40:01,True,,C*04:01 C*04:03,True,,0,cao
+sample_017,3,443,450,A*11:02 A*11:02,True,,B*15:25 B*39:02,False,B*15:25 B*39:01,C*04:03 C*07:02,True,,1,trung binh
+sample_018,3,1154,1169,A*24:02 A*68:01,True,,B*40:06 B*46:01,True,,C*01:02 C*08:01,True,,0,cao
+sample_019,3,1457,1565,A*02:45 A*03:02,False,A*02:01 A*03:02,B*13:02 B*35:01,True,,C*03:03 C*06:02,True,,1,trung binh
+sample_020,3,593,636,A*11:01 A*31:01,True,,B*40:02 B*51:02,False,B*40:08 B*51:02,C*07:02 C*15:02,False,C*07:19 C*15:09,2,thap
+sample_021,3,1056,1077,A*01:01 A*11:01,True,,B*15:17 B*46:01,True,,C*01:02 C*07:01,True,,0,cao
+sample_022,3,879,932,A*02:01 A*02:03,True,,B*40:01 B*52:01,True,,C*03:04 C*12:02,True,,0,cao
+sample_023,3,660,678,A*02:11 A*31:01,False,A*02:45 A*31:01 | A*02:01 A*31:01,B*48:01 B*54:01,True,,C*01:02 C*08:01,True,,1,trung binh
+sample_024,3,457,498,A*02:07 A*11:01,False,A*02:07 A*11:06,B*15:02 B*46:01,True,,C*01:02 C*08:01,False,C*01:05 C*08:01,2,thap
+sample_025,3,1094,1216,A*02:07 A*11:01,True,,B*37:01 B*46:01,True,,C*01:02 C*07:01,True,,0,cao
+sample_026,3,549,601,A*11:01 A*74:02,True,,B*15:01 B*38:02,True,,C*04:01 C*07:02,True,,0,cao
+sample_027,3,739,778,A*11:02 A*11:02,False,A*11:01 A*11:01 | A*11:01 A*11:02,B*15:02 B*40:01,True,,C*07:02 C*08:01,True,,1,trung binh
+sample_028,3,1197,1298,A*11:01 A*33:03,False,A*11:10 A*33:03,B*51:06 B*58:01,True,,C*03:02 C*14:02,True,,1,trung binh
+sample_029,3,715,770,A*11:01 A*33:03,False,A*11:19 A*33:03,B*38:02 B*58:01,True,,C*03:02 C*07:02,True,,1,trung binh
+sample_030,3,615,656,A*11:01 A*24:02,True,,B*13:01 B*46:01,True,,C*01:02 C*03:04,True,,0,cao
+sample_031,3,1033,1044,A*02:07 A*33:03,True,,B*46:01 B*58:01,True,,C*01:02 C*03:02,True,,0,cao
+sample_032,3,1088,1138,A*33:03 A*33:03,True,,B*15:27 B*58:01,True,,C*03:02 C*04:01,True,,0,cao
+sample_033,3,805,863,A*11:01 A*33:03,True,,B*15:25 B*58:01,True,,C*03:02 C*04:03,True,,0,cao
+sample_034,3,614,662,A*29:01 A*33:03,True,,B*07:05 B*56:04,True,,C*01:02 C*15:05,True,,0,cao
+sample_035,3,704,748,A*11:01 A*30:01,True,,B*13:02 B*15:02,True,,C*06:02 C*08:01,True,,0,cao
+sample_036,3,777,852,A*11:01 A*11:01,True,,B*15:02 B*44:03,True,,C*03:04 C*08:01,True,,0,cao
+sample_037,3,1120,1145,A*02:01 A*29:01,True,,B*07:05 B*55:02,True,,C*04:03 C*15:05,True,,0,cao
+sample_038,3,917,956,A*02:03 A*24:02,True,,B*15:25 B*38:02,True,,C*04:03 C*07:02,True,,0,cao
+sample_039,3,718,792,A*02:03 A*11:01,True,,B*38:02 B*38:02,True,,C*07:02 C*07:02,True,,0,cao
+sample_040,3,697,761,A*02:03 A*02:07,True,,B*15:02 B*39:09,True,,C*07:02 C*08:01,True,,0,cao
+sample_041,3,1238,1262,A*24:07 A*24:07,True,,B*15:02 B*35:05,True,,C*04:01 C*08:01,True,,0,cao
+sample_042,3,876,903,A*02:03 A*24:10,True,,B*18:02 B*38:02,True,,C*07:02 C*07:04,True,,0,cao
+sample_043,3,743,759,A*03:01 A*11:01,False,A*03:12 A*11:01,B*40:01 B*48:08,False,B*07:02 B*48:01,C*03:04 C*07:02,True,,2,thap
+sample_044,3,1185,1230,A*02:06 A*24:02,True,,B*15:25 B*38:02,True,,C*04:03 C*07:02,True,,0,cao
+sample_045,3,890,939,A*11:02 A*29:01,True,,B*07:05 B*15:25,True,,C*07:02 C*15:05,True,,0,cao
+sample_046,3,978,1020,A*02:03 A*24:02,False,A*02:03 A*24:29,B*18:01 B*54:01,True,,C*01:02 C*07:04,True,,1,trung binh
+sample_047,3,982,1092,A*02:07 A*11:01,True,,B*07:02 B*38:02,True,,C*07:02 C*07:02,True,,0,cao
+sample_048,3,826,899,A*02:01 A*11:01,True,,B*40:01 B*40:01,True,,C*04:03 C*07:02,True,,0,cao
+sample_049,3,796,843,A*02:06 A*33:03,True,,B*15:13 B*52:01,True,,C*03:02 C*12:02,True,,0,cao
+sample_050,3,756,786,A*11:01 A*32:01,True,,B*07:02 B*13:01,True,,C*03:04 C*07:02,True,,0,cao
+sample_051,3,1287,1364,A*02:03 A*24:02,True,,B*27:06 B*55:02,True,,C*01:02 C*03:04,True,,0,cao
+sample_052,3,735,777,A*24:02 A*29:01,False,A*24:07 A*29:01,B*07:05 B*35:01,True,,C*03:03 C*15:05,True,,1,trung binh
+sample_053,3,1403,1510,A*02:07 A*29:01,True,,B*07:05 B*46:01,True,,C*01:02 C*15:05,True,,0,cao
+sample_054,3,1198,1253,A*24:03 A*34:01,True,,B*15:25 B*15:35,True,,C*04:03 C*07:02,True,,0,cao
+sample_055,3,546,576,A*11:01 A*11:01,True,,B*15:02 B*15:02,False,B*15:25 B*15:25 | B*15:02 B*15:25,C*04:03 C*08:01,False,C*04:03 C*08:21,2,thap
+sample_056,3,784,825,A*02:03 A*11:01,False,A*02:03 A*11:06,B*51:01 B*55:02,True,,C*07:02 C*14:02,True,,1,trung binh
+sample_057,3,1597,1657,A*11:01 A*11:01,True,,B*40:01 B*46:01,True,,C*01:02 C*03:04,True,,0,cao
+sample_058,3,999,1030,A*29:01 A*33:03,True,,B*15:02 B*46:01,True,,C*01:02 C*08:01,True,,0,cao
+sample_059,3,1204,1223,A*02:06 A*24:02,True,,B*15:02 B*15:25,True,,C*07:02 C*08:01,True,,0,cao
+sample_060,3,1073,1141,A*26:01 A*29:01,True,,B*07:05 B*40:06,True,,C*08:01 C*15:05,True,,0,cao
+sample_061,3,663,712,A*11:01 A*11:01,True,,B*39:01 B*40:01,True,,C*07:02 C*07:02,True,,0,cao
+sample_062,3,668,722,A*02:06 A*11:01,True,,B*35:01 B*40:01,True,,C*03:03 C*03:03,True,,0,cao
+sample_063,3,1333,1440,A*11:01 A*11:01,True,,B*15:02 B*15:02,True,,C*08:01 C*08:01,True,,0,cao
+sample_064,3,1567,1711,A*02:03 A*31:01,True,,B*40:01 B*51:02,True,,C*04:03 C*15:02,True,,0,cao
+sample_065,3,1244,1313,A*02:03 A*02:07,True,,B*46:01 B*51:01,True,,C*01:02 C*04:03,True,,0,cao
+sample_066,3,717,726,A*11:01 A*24:02,True,,B*35:05 B*40:01,True,,C*04:01 C*07:02,True,,0,cao
+sample_067,3,716,778,A*24:02 A*33:03,False,A*24:08 A*33:03 | A*24:20 A*33:03,B*07:02 B*48:01,True,,C*07:02 C*08:03,True,,1,trung binh
+sample_068,3,1281,1386,A*02:07 A*29:01,True,,B*07:05 B*15:02,True,,C*08:01 C*15:05,True,,0,cao
+sample_069,3,529,541,A*01:01 A*29:01,False,A*01:06 A*29:01,B*07:05 B*57:01,True,,C*06:02 C*15:05,False,C*06:03 C*15:05,2,thap
+sample_070,3,982,1057,A*02:03 A*33:03,True,,B*38:02 B*40:01,True,,C*03:04 C*07:02,True,,0,cao
+sample_071,3,1197,1286,A*02:06 A*11:01,True,,B*15:01 B*15:25,True,,C*04:03 C*07:02,True,,0,cao
+sample_072,3,1002,1022,A*02:01 A*11:01,False,A*02:45 A*11:01,B*15:02 B*35:01,True,,C*03:03 C*08:01,True,,1,trung binh
+sample_073,3,1569,1634,A*02:03 A*11:01,True,,B*54:01 B*56:01,True,,C*01:02 C*04:03,True,,0,cao
+sample_074,3,1033,1075,A*24:02 A*24:02,False,A*24:07 A*24:07 | A*23:01 A*24:07,B*35:05 B*40:06,True,,C*03:04 C*04:01,True,,1,trung binh
+sample_075,3,1220,1256,A*02:07 A*29:01,True,,B*15:02 B*15:02,True,,C*08:01 C*08:01,True,,0,cao
+sample_076,3,1590,1636,A*24:20 A*33:03,True,,B*15:02 B*58:01,True,,C*03:02 C*08:01,True,,0,cao
+sample_077,3,703,754,A*11:01 A*24:02,True,,B*15:25 B*38:02,True,,C*04:03 C*07:02,True,,0,cao
+sample_078,3,1153,1201,A*24:02 A*34:01,True,,B*13:01 B*56:01,True,,C*03:04 C*07:02,True,,0,cao
+sample_079,3,897,962,A*11:01 A*24:02,True,,B*39:01 B*46:01,True,,C*01:02 C*07:02,True,,0,cao
+sample_080,3,496,559,A*11:04 A*29:01,True,,B*07:05 B*51:02,False,B*07:03 B*51:02,C*15:05 C*15:05,False,C*15:02 C*15:02,2,thap
+sample_081,3,1630,1678,A*26:01 A*33:03,True,,B*38:02 B*58:01,True,,C*03:02 C*07:02,True,,0,cao
+sample_082,3,1106,1127,A*02:07 A*02:07,True,,B*46:01 B*46:01,True,,C*01:02 C*01:02,True,,0,cao
+sample_083,3,1199,1207,A*01:01 A*24:07,True,,B*35:05 B*58:01,True,,C*03:02 C*04:01,True,,0,cao
+sample_084,3,710,766,A*02:07 A*02:07,True,,B*15:12 B*46:01,True,,C*01:02 C*01:02,True,,0,cao
+sample_085,3,717,749,A*11:04 A*29:01,True,,B*07:05 B*46:01,False,B*07:05 B*15:68,C*01:02 C*15:05,True,,1,trung binh
+sample_086,3,1031,1090,A*29:01 A*33:03,True,,B*07:05 B*58:01,True,,C*03:02 C*15:05,True,,0,cao
+sample_087,3,1219,1263,A*11:01 A*29:01,True,,B*07:05 B*15:12,True,,C*03:03 C*15:05,True,,0,cao
+sample_088,3,952,1015,A*02:07 A*33:03,True,,B*46:01 B*58:01,True,,C*01:02 C*03:02,True,,0,cao
+sample_089,3,1216,1336,A*02:03 A*24:02,True,,B*15:02 B*38:02,True,,C*07:02 C*08:01,True,,0,cao
+sample_090,3,1174,1269,A*11:01 A*24:02,True,,B*13:01 B*52:01,True,,C*03:04 C*07:02,True,,0,cao
+sample_091,3,1437,1494,A*24:02 A*33:03,True,,B*40:06 B*58:01,True,,C*03:02 C*08:01,True,,0,cao
+sample_092,3,840,877,A*11:02 A*11:02,True,,B*15:02 B*15:35,True,,C*07:02 C*08:01,True,,0,cao
+sample_093,3,1075,1158,A*11:01 A*34:01,False,A*11:10 A*34:01,B*40:01 B*56:01,True,,C*04:03 C*07:02,True,,1,trung binh
+sample_094,3,634,659,A*02:07 A*11:01,False,A*02:07 A*11:19,B*15:02 B*46:01,True,,C*01:02 C*08:01,True,,1,trung binh
+sample_095,3,2000,2099,A*02:07 A*24:02,True,,B*27:06 B*58:01,True,,C*03:02 C*03:04,True,,0,cao
+sample_096,3,508,567,A*29:01 A*33:03,True,,B*07:05 B*58:01,False,B*07:05 B*48:02,C*03:02 C*15:05,True,,1,trung binh
+sample_097,3,566,572,A*02:07 A*24:02,True,,B*46:01 B*51:01,True,,C*01:02 C*14:02,True,,0,cao
+sample_098,3,719,764,A*11:01 A*24:20,False,A*11:01 A*24:02,B*48:01 B*54:01,True,,C*07:02 C*08:03,True,,1,trung binh
+sample_099,3,778,804,A*33:03 A*33:03,True,,B*39:09 B*58:01,True,,C*03:02 C*07:02,True,,0,cao
+sample_100,3,594,661,A*03:02 A*24:07,True,,B*15:02 B*38:02,True,,C*06:02 C*08:01,False,C*06:03 C*08:01,1,trung binh
+sample_101,3,810,835,A*11:01 A*24:02,True,,B*15:02 B*58:01,True,,C*03:02 C*07:02,True,,0,cao
