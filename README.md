@@ -1,8 +1,10 @@
-# Intron-borrowed reference sequences limit OptiType HLA class I typing on targeted amplicon data
+# OptiType HLA class I typing on targeted amplicon data: high population-level concordance, unstable rare-allele calls
 
 A reanalysis of PRJNA609593 (Kinh Vietnamese, n = 101)
 
-OptiType reproduces published population-level HLA class I allele frequencies from targeted amplicon DNA data (Spearman 0.983), but one class of calls — rare alleles sharing an allele group with a common one — is unstable in a way that parameter tuning cannot fix. This repository documents the mechanism, quantifies it, and shows why the usual remedy fails.
+OptiType reproduces the published HLA class I allele frequencies of this cohort from long-range PCR amplicon data, with Spearman 0.983 against the commercial pipeline used in the source study. Individual calls are less reliable. Across three independent read subsamples per individual, rare alleles changed between runs about 4.7 times as often as common ones, and every allele called here but absent from the published table came from an unstable call.
+
+These patterns are consistent with limitations the OptiType authors described for closely related alleles (Szolek *et al.* 2014). The contribution of this repository is to measure them on a data type the tool was not benchmarked on, and to show that the obvious parameter fix trades one error for another.
 
 **Scope:** HLA class I (A, B, C) only. The source study also typed DRB1 and DQB1; OptiType does not support class II.
 
@@ -10,23 +12,34 @@ OptiType reproduces published population-level HLA class I allele frequencies fr
 
 ## Key findings
 
-**1. The reference is almost entirely composite.**
+**1. Population-level frequencies are reproduced.**
 
-Of 11,047 class I entries in OptiType's genomic reference, 10,713 (97.0%) pair real exon sequence with intron sequence borrowed from a related allele, because IMGT/HLA has full genomic sequence for only a minority of alleles. Only 334 entries (3.0%) carry the allele's own genomic sequence.
+At 2-field resolution, allele frequencies from 101 individuals correlate with the published Table 1 at Spearman 0.983 (HLA-A 0.990, HLA-B 0.969, HLA-C 0.984).
 
-| Locus | Entries | Target alleles | Intron-borrowed |
-|---|---|---|---|
-| HLA-A | 3,823 | 2,192 | 97.4% |
-| HLA-B | 3,374 | 2,852 | 95.8% |
-| HLA-C | 3,850 | 1,753 | 97.7% |
+**2. Instability concentrates in rare members of common allele groups.**
 
-**2. This matters specifically for amplicon DNA.**
+Each sample was typed three times from independent subsets of 20,000 read pairs. Rare alleles (≤3 occurrences) changed between runs in 39.1% of their appearances; common alleles in 8.4%. The most unstable alleles are rare relatives of common ones — `A*11:06`, `A*11:10`, `A*24:08`, `A*24:20`, `A*02:11` — and all six alleles called here but absent from Table 1 are among them.
 
-Long-range PCR amplicon data covers the whole gene, so most reads fall in introns — that is, in sequence that does not reflect the target allele. In one sample, 9,088 distinct reads produced 7,059,824 alignments: a mean of 777 reference entries per read, ranging from 1 to 2,823.
+**3. Tuning `--beta` does not fix it.**
 
-**3. Instability is concentrated, and parameter tuning trades one error for another.**
+Lowering OptiType's homozygosity threshold turned three suspected false homozygotes heterozygous. In five other samples, homozygous for common alleles, the same setting split five loci — each time into a rare allele. The trade-off is not specific to OptiType: other HLA callers rely on similarly empirical thresholds.
 
-Running each sample three times with independent read subsets, rare alleles (≤3 occurrences) changed between runs in 39.1% of appearances, versus 8.4% for common alleles. Lowering `--beta` fixed three suspected false homozygotes but created five false heterozygotes in five test samples.
+---
+
+## Background: OptiType's reference and amplicon data
+
+Three features of how OptiType builds its reference explain these results. All are described in the original methods (Szolek *et al.* 2014).
+
+- **Only exons 2 and 3, with flanking intron, are used.** This window encodes the peptide-binding groove and is the only region sequenced for nearly all known alleles; restricting the reference to it gives every allele an equal chance of being called. Entries in the shipped reference are about 1.5 kb long.
+- **Missing intron sequence is reconstructed from the nearest fully sequenced relative.** The authors report 10,779 reconstructed sequences. The reference shipped with OptiType 1.5.0 contains exactly 10,779 reconstructed entries — 10,713 of 11,047 (97.0%) at HLA-A, -B and -C. The authors validated the reconstruction at 99.89% intron similarity, and found that including intron sequence reduced typing error 2.7- to 3.9-fold on exome data.
+- **Alleles never reported in population databases are excluded** before optimisation (allelefrequencies.net, dbMHC).
+
+Two consequences matter for amplicon data that covers whole genes:
+
+- **Most reads have no target.** Reads from exon 1, exons 4–8, distal intron, and all class II loci fall outside the reference window. In one sample, about 10% of R1 reads mapped.
+- **Close relatives can be indistinguishable over most of their sequence.** When an allele's intron is reconstructed from a close relative — `C*06:03` from `C*06:02`, for example — the two are identical across that intron in the reference and differ only in exon sequence. The call then depends on the few reads that happen to cover a differing position. In one sample, 9,088 R1 reads produced 7,059,824 alignments: a mean of 777 reference entries per read, ranging from 1 to 2,823.
+
+The authors named both resulting failure modes: ambiguity between alleles that differ only in poorly covered segments, and homozygous calls when two highly similar alleles form a heterozygous locus. This analysis observes both on amplicon data.
 
 ---
 
@@ -52,13 +65,13 @@ Read properties below were measured from the data, not taken from the publicatio
 
 ## Methods
 
-Reads were downloaded from ENA, filtered with `fastp` (`--length_required 100`, adapter auto-detection), subsampled to **20,000 read pairs** with `seqtk`, and typed with **OptiType 1.5.0** (`--dna`, razers3 3.5.12, GLPK 5.0).
+Reads were downloaded from ENA, filtered with `fastp` (`--length_required 100`, adapter auto-detection), subsampled to **20,000 read pairs** with `seqtk`, and typed with **OptiType 1.5.0** (`--dna`, razers3 3.5.12, GLPK 5.0, default `--beta 0.009`).
 
 Each sample was run with **three independent seeds** (100, 200, 300) to separate reproducible calls from calls that depend on which reads happened to be drawn. 303 runs completed, 0 failures.
 
 Subsampling was necessary rather than convenient. On the smallest sample, using all reads took 15m25s and 4.44 GB peak RAM, versus 1m03s and 1.43 GB at 20,000 pairs — for an identical genotype. Cost scales non-linearly: 4.6× the reads produced 14.7× the runtime.
 
-Comparison against the published Table 1 was done at **2-field resolution**. OptiType cannot resolve 3-field differences (synonymous and intronic variants), and the 2020 allele names predate several IMGT/HLA renamings. The study's 3-field claims are therefore **not** independently checked here.
+Comparison against the published Table 1 was done at **2-field resolution**. OptiType does not resolve 3-field differences, and allele names have changed across IMGT/HLA releases. The source study's 3-field calls are therefore **not** independently checked here.
 
 ---
 
@@ -75,9 +88,9 @@ Comparison against the published Table 1 was done at **2-field resolution**. Opt
 
 87 alleles were called here, 85 appear in Table 1, and 81 are shared.
 
-**Six alleles called only here** — `A*02:11`, `A*02:12`, `A*02:45`, `B*39:02`, `B*40:49`, `B*48:08`. Each occurs in exactly one individual, and all six appear in the set of alleles that fluctuated across seeds. This is an independent check that they are artifacts.
+**Six alleles called only here** — `A*02:11`, `A*02:12`, `A*02:45`, `B*39:02`, `B*40:49`, `B*48:08`. Each occurs in exactly one individual, and all six are among the alleles that changed between seeds. Two independent measurements point at the same calls.
 
-**Four alleles only in Table 1.** `C*04:82` has no entry in OptiType's reference and therefore cannot be called. `A*33:01` (20 entries), `C*03:17` (11 entries) and `B*55:18` (2 entries) are present in the reference but were missed.
+**Four alleles only in Table 1.** `C*04:82` has no entry in OptiType's reference and cannot be called. `A*33:01` (20 entries), `C*03:17` (11) and `B*55:18` (2) are present in the reference but were not called.
 
 ### Call stability
 
@@ -89,7 +102,7 @@ Comparison against the published Table 1 was done at **2-field resolution**. Opt
 
 74 samples were stable at all three loci, 19 at two, 7 at one, and 1 at none.
 
-HLA-A is the least stable locus. It also carries the two largest intron donors in the reference — `A*02:01` lends intron sequence to 263 other 2-field alleles and `A*24:02` to 198 — and the alleles that fluctuate most are rare members of those same groups: `A*11:06`, `A*11:10`, `A*11:19`, `A*24:08`, `A*24:20`, `A*02:11`, `A*02:12`, `A*02:45`.
+HLA-A is the least stable locus. It carries the two largest intron donors in the reference — `A*02:01` supplies reconstructed intron to 263 other 2-field alleles, `A*24:02` to 198 — and the alleles that fluctuate most are rare members of those groups: `A*11:06`, `A*11:10`, `A*11:19`, `A*24:08`, `A*24:20`, `A*02:11`, `A*02:12`, `A*02:45`.
 
 The alleles most often involved in an unstable call are `A*24:02` (8 occasions), `A*11:01` (7) and `A*02:01` (4) — the group anchors themselves.
 
@@ -101,11 +114,13 @@ The alleles most often involved in an unstable call are `A*24:02` (8 occasions),
 | HLA-B | 6 | 5.7 | 1.05 |
 | HLA-C | 9 | 11.3 | 0.79 |
 
-The absolute excess at HLA-A is 3.3 individuals. This is consistent with the mechanism described above but **not statistically significant at n = 101**. The source study reported no HWE deviation, and these data do not contradict that.
+The absolute excess at HLA-A is 3.3 individuals. This is consistent with the zygosity failure mode described above but **not statistically significant at n = 101**. The source study reported no HWE deviation, and these data do not contradict that.
 
 ### The `--beta` trade-off
 
-`--beta` is OptiType's homozygosity detection threshold. Three samples called `A*11:02` homozygous were re-run across beta values:
+`--beta` sets how many additional reads a heterozygous solution must explain before OptiType prefers it over a homozygous one. The authors chose 0.009 by cross-validation on exome data from the 1000 Genomes Project.
+
+Three samples called `A*11:02` homozygous were re-run across beta values:
 
 | beta | Call |
 |---|---|
@@ -113,11 +128,11 @@ The absolute excess at HLA-A is 3.3 individuals. This is consistent with the mec
 | 0.009 (default) | `A*11:02` / `A*11:02` |
 | 0.05 | `A*11:02` / `A*11:02` |
 
-All three samples changed in the same direction, consistent with false homozygosity at the default setting.
+All three changed in the same direction — the pattern expected when two highly similar alleles form a heterozygous locus. The population data point the same way: the default calls give 3 fewer `A*11:01` and 3 more `A*11:02` than Table 1, and re-calling these three individuals as heterozygous would bring both alleles to exactly their Table 1 counts. This suggests, but does not prove, that the default calls were wrong.
 
-However, five samples homozygous for *common* alleles were then re-run at beta 0.001, and five loci were split that should not have been:
+Five samples homozygous for *common* alleles were then re-run at beta 0.001. Five loci were split:
 
-| Sample locus | Default (0.009) | beta 0.001 |
+| Locus | Default (0.009) | beta 0.001 |
 |---|---|---|
 | C | `C*07:02` / `C*07:02` | `C*07:02` / `C*07:123` |
 | A | `A*02:07` / `A*02:07` | `A*02:07` / `A*31:01` |
@@ -125,23 +140,35 @@ However, five samples homozygous for *common* alleles were then re-run at beta 0
 | A | `A*02:07` / `A*02:07` | `A*02:07` / `A*30:02` |
 | C | `C*01:02` / `C*01:02` | `C*01:02` / `C*02:19` |
 
-Every newly introduced allele is rare.
+Every newly introduced allele is rare, which points to spurious reads rather than a genuine second allele.
 
-High beta produces false homozygotes; low beta produces false heterozygotes. No single value is correct for all samples, because the read ratio that beta thresholds is itself uninformative when two alleles share intron sequence in the reference. The problem is in the reference, not in the parameter.
+Why a threshold is needed at all: maximising the number of explained reads can never be hurt by adding a second allele, so without a penalty the optimum is always heterozygous. The OptiType authors note that the unpenalised formulation favours heterozygous solutions because of spurious hits such as sequencing errors. Other sources of such reads include PCR misincorporation and cross-mapping from related loci.
+
+High beta risks false homozygotes; low beta risks false heterozygotes. This is the sensitivity–specificity trade-off of any cut-off: when a true second allele is supported by only a few discriminating reads — as for close relatives — its signal overlaps with spurious reads, and no threshold separates them cleanly. On this data no single value is right for every sample.
+
+The trade-off is not specific to OptiType. arcasHLA calls a locus homozygous when the minor allele's non-shared reads fall below 15% of the major allele's, and culls alleles below 10% of the top abundance, a cut-off it adopted from HISAT-genotype (Orenbuch *et al.* 2020). Like OptiType's β, these values were chosen empirically.
 
 ---
 
 ## Limitations
 
-**No per-sample ground truth.** The source publication reports haplotype and allele frequency tables, not individual genotypes. Comparison is therefore population-level only. Where the two methods disagree, this analysis **cannot determine which is correct** — Assign TruSight draws on the same IMGT/HLA database and faces the same intron problem. Disagreements are reported as disagreements, not as errors by either side.
+**The mechanisms are not new.** OptiType's reference construction, intron reconstruction and both failure modes observed here are described in Szolek *et al.* 2014. This analysis quantifies them on long-range PCR amplicon data; it does not identify a new mechanism.
 
-**Stability is not accuracy.** The three-seed design measures precision (reproducibility), not correctness. Three samples labelled high-confidence by that criterion were shown by the beta experiment to be wrong. A tool with a systematic bias would be perfectly stable and still wrong.
+**No per-sample ground truth.** The source publication reports allele and haplotype frequency tables, not individual genotypes. Comparison is therefore population-level only. Where the two methods disagree, this analysis **cannot determine which is correct**. Disagreements are reported as disagreements, not as errors by either side.
 
-**Single tool, single reference version.** Only OptiType was tested. HLA-HD, Kourami and HISAT-genotype construct their references differently and may behave differently. The finding about intron-borrowed sequences applies to the reference shipped with OptiType 1.5.0 via bioconda.
+**Stability is not accuracy.** The three-seed design measures precision, not correctness. Three samples labelled high-confidence by that criterion are, on the evidence of the beta experiment and the population counts, probably wrong. A tool with a systematic bias would be perfectly stable and still wrong.
+
+**Reference age.** The number of reconstructed entries in the shipped reference matches the figure published in 2014 exactly, which suggests it is the original build from IMGT/HLA Release 3.14.0 (July 2013). This is an inference from the count, not a confirmed fact. If correct, alleles named after 2013 cannot be called — `C*04:82` has no entry — and the comparison with a 2019-era commercial pipeline spans six years of nomenclature.
+
+**Reference window.** Alleles that differ only outside exons 2–3 cannot be separated by OptiType, by design. Reference data for the remaining exons would help resolve some rare alleles.
+
+**Single tool.** Only OptiType was tested. HLA-HD, Kourami and HISAT-genotype construct their references differently and may behave differently.
 
 **Class II not addressed.** DRB1 and DQB1 carry the most distinctive alleles in this population (`DRB1*12:02`, `DQB1*03:01`) but fall outside OptiType's scope.
 
-**Library preparation inference is unverified.** Measured insert size (211–266 bp) is roughly ten-fold shorter than the ~2 kb fragmentation described in the source methods. A tagmentation step between the two is the most plausible explanation, but this has **not** been checked against the TruSight HLA technical documentation and is stated here as a hypothesis, not a finding.
+**Library preparation inference is unverified.** Measured insert size (211–266 bp) is roughly ten-fold shorter than the ~2 kb fragmentation described in the source methods. A tagmentation step is the most plausible explanation but has **not** been checked against the TruSight HLA technical documentation.
+
+**Laboratory artefacts are not separated from computational ones.** Allelic dropout during PCR — preferential amplification of one allele — also produces false homozygotes, and polymerase errors produce spurious reads. These data cannot distinguish such effects from threshold effects in the typing algorithm.
 
 **Statistical power.** Several observations rest on small counts: 3 excess homozygotes, 6 discordant alleles, 5 samples in the reverse beta test.
 
@@ -188,14 +215,18 @@ Raw reads, intermediate files and per-run OptiType outputs are not committed; `s
 
 Objective 1 — typing and comparison — is complete.
 
-A second objective is in progress: auditing per-allele training data coverage in peptide–MHC binding predictors for alleles common in this population. `results/mhcflurry_training_counts.csv` is a partial result and its interpretation is not yet settled.
+A second objective is in progress: how much training data do peptide–MHC binding predictors actually have for the alleles common in this population? `results/mhcflurry_training_counts.csv` holds raw per-allele counts; the population-weighted analysis is not finished.
 
-**Related work:** [luad-deg-analysis](https://github.com/dkhoi2505/luad-deg-analysis) — differential expression in lung adenocarcinoma, including an MHC class I antigen presentation panel. Both repositories approach antigen presentation from opposite ends: one in tumour tissue, one at the population level.
+**Related work:** [luad-deg-analysis](https://github.com/dkhoi2505/luad-deg-analysis) — differential expression in lung adenocarcinoma, including an MHC class I antigen presentation panel.
 
 ---
 
-## Citation
+## References
 
 Do MD, Le LGH, Nguyen VT, Dang TN, Nguyen NH, Vu HA, Mai TP. High-Resolution HLA Typing of HLA-A, -B, -C, -DRB1, and -DQB1 in Kinh Vietnamese by Using Next-Generation Sequencing. *Front Genet.* 2020;11:383. doi:[10.3389/fgene.2020.00383](https://doi.org/10.3389/fgene.2020.00383)
 
-This repository is an independent reanalysis of public data. It is not affiliated with, endorsed by, or produced in collaboration with the authors of that study.
+Szolek A, Schubert B, Mohr C, Sturm M, Feldhahn M, Kohlbacher O. OptiType: precision HLA typing from next-generation sequencing data. *Bioinformatics.* 2014;30(23):3310–3316. doi:[10.1093/bioinformatics/btu548](https://doi.org/10.1093/bioinformatics/btu548)
+
+Orenbuch R, Filip I, Comito D, Shaman J, Pe'er I, Rabadan R. arcasHLA: high-resolution HLA typing from RNAseq. *Bioinformatics.* 2020;36(1):33–40. doi:[10.1093/bioinformatics/btz474](https://doi.org/10.1093/bioinformatics/btz474)
+
+This repository is an independent reanalysis of public data. It is not affiliated with, endorsed by, or produced in collaboration with the authors of any cited work.
