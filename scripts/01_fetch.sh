@@ -17,7 +17,7 @@ for f in data/raw/*.fastq.gz; do
   gzip -t "$f" 2>/dev/null || { echo "HONG: $f"; loi=$((loi+1)); }
 done
 echo "So file hong: $loi"
-[ $loi -gt 0 ] && { echo "DUNG LAI — tai lai file hong truoc"; exit 1; }
+[ $loi -gt 0 ] && { echo "DUNG LAI - tai lai file hong truoc"; exit 1; }
 
 echo "=== LOC BANG FASTP ==="
 for s in $(cut -f1 data/runs_sorted.tsv); do

@@ -1,16 +1,16 @@
-# HLA Kinh reanalysis — nhat ky
+# HLA Kinh reanalysis - nhat ky
 
 ## Moi truong
 - WSL2, Ubuntu, 8 core, RAM 3.7GiB (da nang .wslconfig: 5GB + swap 8GB)
 - conda env `hla`: optitype 1.5.0, razers3 3.5.12, glpk 5.0, samtools, seqtk, fastp 1.3.6
-- Python 3.13.15 — chay duoc, khong xung dot
+- Python 3.13.15 - chay duoc, khong xung dot
 
 ## Du lieu
 - PRJNA609593, 101 run, 1 run/nguoi, library_strategy=AMPLICON
 - Tong 10.64 GB nen
 - Read goc 151bp, da trim truoc khi nop SRA (80-86% con >=150bp)
 - Q40 = 0% -> quality da bi binning, khong phai gia tri may goc
-- Insert size 211-266bp — KHONG khop mo ta "~2kb" trong paper
+- Insert size 211-266bp - KHONG khop mo ta "~2kb" trong paper
   -> suy doan: co buoc tagmentation trung gian (CHUA xac minh)
 
 ## Pilot: 3 mau theo min/median/max read count
@@ -43,7 +43,7 @@ Genotype GIONG NHAU o ca 2 muc do phu:
 - [ ] Thi nghiem downsampling day du (Chang 4)
 - [ ] Xac minh tagmentation qua tai lieu TruSight HLA
 
-## Chang 4 — thi nghiem on dinh
+## Chang 4 - thi nghiem on dinh
 
 ### Thang do phu (3 mau x 5 muc, seed 100)
 - SRR11212911, SRR11212960: on dinh tu 2,000 cap (~116-136 read dung)
@@ -71,7 +71,7 @@ Genotype GIONG NHAU o ca 2 muc do phu:
 - Khong the dat 1 nguong subsample "an toan" cho moi mau
 - Phai chay MOI mau voi nhieu seed va danh dau call khong on dinh
 
-## Buoc 4.5 — kiem tra allele Kinh trong tham chieu
+## Buoc 4.5 - kiem tra allele Kinh trong tham chieu
 
 Gia thuyet cua Claude: allele pho bien o nguoi Kinh thieu trinh tu gen
 that hon allele chau Au -> thien lech quan the o tang tham chieu.
@@ -93,7 +93,7 @@ SRR11212875 mang C*06:03 (khong co gen that) -> chinh la ca phan ky.
 Kiem chung: sau khi chay 101 mau x 3 seed, xem call khong hoi tu co
 tap trung o allele hiem khong.
 
-## Chang 5 — 101 mau x 3 seed (303 lan chay, 0 loi)
+## Chang 5 - 101 mau x 3 seed (303 lan chay, 0 loi)
 
 ### On dinh theo locus
 HLA-A: 81/101 (80.2%)  <- kem nhat
@@ -133,7 +133,7 @@ Lan dau do "allele co trong mau bat on khong" -> sai, vi allele
 cang pho bien cang chac chan True. Phai do "allele co DAO DONG
 giua cac seed khong".
 
-## Chang 6 — so tan suat voi Bang 1 (Do et al. 2020)
+## Chang 6 - so tan suat voi Bang 1 (Do et al. 2020)
 
 ### Tuong quan (81 allele co o ca hai, muc 2-field)
 HLA-A: n=24  Spearman 0.990  Pearson 0.995
@@ -167,7 +167,7 @@ va chi dung ~1.4% so read goc.
 Toan bo sai khac tap trung o allele hiem, va da duoc du bao truoc boi
 thi nghiem on dinh 3-seed.
 
-## Buoc 6.2 — khao sat tham so --beta
+## Buoc 6.2 - khao sat tham so --beta
 
 ### Chieu 1: 3 nguoi goi la A*11:02 dong hop tu
 beta 0.001 -> A*11:01 A*11:02  (di hop tu)
@@ -217,7 +217,7 @@ lech do tham so.
 2. Dem "nguoi" vs dem "allele" - nguoi dong hop tu mang 2 ban nhung
    chi la 1 nguoi. Luon noi ro don vi dem.
 
-## Chang 9 — viet lai script kiem toan tham chieu
+## Chang 9 - viet lai script kiem toan tham chieu
 
 Script 07_reference_audit.py thay cho lenh ad-hoc truoc do.
 Khac biet: CHI tinh locus A/B/C (loai E/F/G/H/J/K/L/V - class I khong
