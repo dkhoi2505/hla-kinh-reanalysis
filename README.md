@@ -4,7 +4,7 @@ A reanalysis of PRJNA609593 (Kinh Vietnamese, n = 101)
 
 OptiType reproduces the published HLA class I allele frequencies of this cohort from long-range PCR amplicon data, with Spearman 0.983 against the commercial pipeline used in the source study. Individual calls are less reliable. Across three independent read subsamples per individual, rare alleles changed between runs about 4.7 times as often as common ones, and every allele called here but absent from the published table came from an unstable call.
 
-\These patterns are consistent with limitations the OptiType authors described for closely related alleles (Szolek *et al.* 2014). The contribution of this repository is to measure them on a data type the tool was not benchmarked on, and to show that the obvious parameter fix trades one error for another.
+These patterns are consistent with limitations the OptiType authors described for closely related alleles (Szolek *et al.* 2014). The contribution of this repository is to measure them on a data type the tool was not benchmarked on, and to show that the obvious parameter fix trades one error for another.
 
 **Scope:** HLA class I (A, B, C) only. The source study also typed DRB1 and DQB1; OptiType does not support class II.
 
@@ -146,7 +146,7 @@ Why a threshold is needed at all: maximising the number of explained reads can n
 
 High beta risks false homozygotes; low beta risks false heterozygotes. This is the sensitivity-specificity trade-off of any cut-off: when a true second allele is supported by only a few discriminating reads (as for close relatives), its signal overlaps with spurious reads, and no threshold separates them cleanly. On this data no single value is right for every sample.
 
-The trade-off is not specific to OptiType. arcasHLA calls a locus homozygous when the minor allele's non-shared reads fall below 15% of the major allele's, and culls alleles below 10% of the top abundance, a cut-off it adopted from HISAT-genotype (Orenbuch *et al.* 2020). Like OptiType's β, these values were chosen empirically.
+The trade-off is not specific to OptiType. arcasHLA calls a locus homozygous when the minor allele's non-shared reads fall below 15% of the major allele's, and culls alleles below 10% of the top abundance, a cut-off it adopted from HISAT-genotype (Orenbuch *et al.* 2020). Like OptiType's beta, these values were chosen empirically.
 
 ---
 
