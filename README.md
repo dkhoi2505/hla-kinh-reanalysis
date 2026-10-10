@@ -1,4 +1,4 @@
-# OptiType HLA class I typing on targeted amplicon data: high population-level concordance, unstable rare-allele calls
+# HLA class I in a Kinh Vietnamese cohort: OptiType typing reproducibility, and the training-data gap for peptide-MHC predictors
 
 A reanalysis of PRJNA609593 (Kinh Vietnamese, n = 101)
 
@@ -6,11 +6,15 @@ OptiType reproduces the published HLA class I allele frequencies of this cohort 
 
 These patterns are consistent with limitations the OptiType authors described for closely related alleles (Szolek *et al.* 2014). The contribution of this repository is to measure them on a data type the tool was not benchmarked on, and to show that the obvious parameter fix trades one error for another.
 
-**Scope:** HLA class I (A, B, C) only. The source study also typed DRB1 and DQB1; OptiType does not support class II.
+A second question follows from the first. Having established which alleles this cohort carries, how much training data do peptide-MHC binding predictors actually have for them? Using Germany DKMS (n = 3,456,066) as a reference population to break the confound between locus and ancestry, both effects turn out to be present and to compound. Among alleles common in Germany, median binding-affinity measurements differ 24-fold between HLA-A and HLA-C; within each locus, German frequency predicts measurement count (Spearman +0.57 to +0.82). 15 of 46 alleles common here but not in Germany have no training data at all.
+
+**Scope:** HLA class I (A, B, C) only. The source study also typed DRB1 and DQB1; OptiType does not support class II. Part II examines MHCflurry 2.2.1 only; NetMHCpan's training data is not covered.
 
 ---
 
 ## Key findings
+
+### Typing (Part I)
 
 **1. Population-level frequencies are reproduced.**
 
@@ -23,6 +27,20 @@ Each sample was typed three times from independent subsets of 20,000 read pairs.
 **3. Tuning `--beta` does not fix it.**
 
 Lowering OptiType's homozygosity threshold turned three suspected false homozygotes heterozygous. In five other samples, homozygous for common alleles, the same setting split five loci, each time into a rare allele. The trade-off is not specific to OptiType: other HLA callers rely on similarly empirical thresholds.
+
+### Training-data coverage (Part II)
+
+**4. There is a locus effect that ancestry does not explain.**
+
+Among the 65 alleles common in Germany, median binding-affinity measurements per allele are 4,300 at HLA-A, 290 at HLA-B and 177 at HLA-C. These are the alleles the reference population carries, so population is held fixed and the 24-fold gap cannot be attributed to it.
+
+**5. There is also a population effect that locus does not explain.**
+
+Within each locus, alleles common in this cohort but rare in Germany have far fewer measurements, and German frequency correlates with measurement count at Spearman +0.57 to +0.82 across three thresholds and three loci (9 of 9 positive). The two effects compound: alleles at HLA-C that are common here and rare in Germany have a median of zero.
+
+**6. The deficit is specific to binding-affinity assays.**
+
+HLA-C holds 17.9% of eluted-ligand measurements but 2.4% of binding-affinity measurements, a 7.5-fold discrepancy on the same alleles in the same population. 15 of 46 alleles common here but not in Germany have no entry in the training data at all; none of the 65 German-common alleles lack one.
 
 ---
 
@@ -75,7 +93,7 @@ Comparison against the published Table 1 was done at **2-field resolution**. Opt
 
 ---
 
-## Results
+## Results: typing and comparison
 
 ### Population allele frequency
 
@@ -150,7 +168,116 @@ The trade-off is not specific to OptiType. arcasHLA calls a locus homozygous whe
 
 ---
 
+## Part II: training-data coverage for these alleles
+
+A binding predictor's usefulness for a given allele depends on how much measured data that allele contributed to training. MHCflurry 2.2.1 ships per-allele counts of its training peptides, split by assay type: **binding affinity** (BA, in-vitro IC50, one peptide per experiment) and **eluted ligand** (EL, peptides recovered from cell surfaces by mass spectrometry, thousands per experiment). Joining those counts to this cohort's allele frequencies asks a direct question: are the alleles these 101 people carry the alleles the predictor was trained on?
+
+### The confound, and how it was broken
+
+A first pass showed the expected gradient: alleles common in this cohort have less data at HLA-C than at HLA-A, and the alleles with least data are mostly ones rare outside East Asia. Two explanations fit equally well.
+
+- **Locus bias.** HLA-C is less studied than HLA-A and -B regardless of population.
+- **Population inequity.** Alleles common outside Europe are under-represented regardless of locus.
+
+These cannot be separated within this cohort, because every allele here has both properties at once: it sits at some locus, *and* it is rare in Europeans. A reference population in which the two properties come apart is required.
+
+Germany DKMS serves that role. At n = 3,456,066 it is large enough for precise frequency estimates, it is European, and it contains alleles at all three loci across the full frequency range. Holding one variable fixed at a time then separates the effects:
+
+| Held fixed | Read across | Isolates |
+|---|---|---|
+| Population (only German-common alleles) | the three loci | locus effect |
+| Locus (within each locus) | the two populations | population effect |
+
+### Reference data
+
+| | |
+|---|---|
+| Population | Germany DKMS, [AFND](https://allelefrequencies.net) population 3767 |
+| Sample size | 3,456,066 individuals (6,912,132 chromosomes) |
+| Method, date | NGS, 2021; AFND gold-standard filter |
+| Source type | Bone marrow donor registry; ethnicity self-assigned |
+| Primary reference | Seitz *et al.* 2021 |
+| Records retrieved | 835 (A), 1,071 (B), 902 (C) |
+| Alleles with frequency > 0 | 337, 474, 332 |
+| Common alleles (>= 0.005) | 17, 31, 17 |
+| Training data | MHCflurry 2.2.1 per-allele BA and EL peptide counts |
+
+Frequencies were scraped from AFND and verified three ways: record counts match the totals AFND reports for each locus, no allele appears twice, and the locus-A list reproduces an independent manual extraction exactly (17 alleles, summed frequency 0.96940). Both the full table (`data/germany_af_full.tsv`, 1,143 alleles) and the thresholded subset (`data/germany_af.tsv`, 65) are committed; the threshold is applied in code rather than baked into the data, so sub-threshold frequencies keep their real values.
+
+### Thresholds
+
+The two populations are cut by two different kinds of operation, deliberately.
+
+**This cohort: by observation count.** With 101 individuals there are 202 chromosomes per locus, so a frequency is `k/202` for integer `k`. Only 203 values are possible, spaced 0.00495 apart, and nothing exists between them. A frequency threshold is therefore a step function over counts, and stating it as a frequency invites an off-by-one-step error: the published figures are rounded, so `1/202` appears as `0.00495`, which is *less* than `1/202`. A threshold set to `1/202` would exclude every singleton, and a threshold of 0.005 excludes them too. The cut is therefore stated as a count: `k >= 1`, every allele observed at least once. Results are repeated at `k >= 2` and `k >= 3`.
+
+**Reference population: by frequency.** `>= 0.005` is a conventional 0.5% cut for "common allele", not a quantity derived from the study design. At 6.9 million chromosomes the step spacing is 1.4e-7 and frequencies are effectively continuous, so a frequency threshold is the appropriate operation. This set covers 96.9% (A), 95.7% (B) and 97.9% (C) of chromosomes.
+
+### Result 1: a locus effect, with population held constant
+
+Restricted to the 65 alleles common in Germany:
+
+| Locus | n | Median BA | p25 | p75 | Zero BA | Total BA | Total EL | EL:BA |
+|---|---|---|---|---|---|---|---|---|
+| HLA-A | 17 | **4,300** | 2,546 | 5,601 | 0/17 | 79,825 | 158,134 | 2.0 |
+| HLA-B | 31 | 290 | 24 | 2,921 | 3/31 | 45,235 | 245,829 | 5.4 |
+| HLA-C | 17 | **177** | 25 | 244 | 3/17 | 3,120 | 87,891 | 28.2 |
+
+A typical HLA-C allele that is common in the reference population has 24-fold fewer binding-affinity measurements than a typical HLA-A allele. Every allele in this table is one the reference population carries, so ancestry is not available as an explanation.
+
+Two illustrations, both common in Germany: `C*07:02` is the second most frequent HLA-C allele there (0.139) and has 194 BA measurements; `A*24:02` is *less* frequent (0.091) and has 4,549. These are single alleles and are shown to make the pattern concrete, not as evidence; the evidence is the medians above.
+
+### Result 2: a population effect, with locus held constant
+
+Within each locus, comparing alleles common in Germany against alleles common here but not in Germany (median BA, group size in brackets):
+
+| Locus | Common in Germany | Common here, rare in Germany | | |
+|---|---|---|---|---|
+| | | `k >= 1` | `k >= 2` | `k >= 3` |
+| HLA-A | 4,300 (17) | 7 (14) | 20 (12) | 14 (9) |
+| HLA-B | 290 (31) | 0 (24) | 0 (16) | 4 (14) |
+| HLA-C | 177 (17) | 0 (8) | 0 (5) | 0 (4) |
+
+Rank correlation between German frequency and BA count, over alleles common in this cohort:
+
+| Cohort threshold | n | Pooled | HLA-A | HLA-B | HLA-C |
+|---|---|---|---|---|---|
+| `k >= 1` | 85 | +0.712 | +0.752 | +0.762 | +0.815 |
+| `k >= 2` | 63 | +0.593 | +0.666 | +0.689 | +0.770 |
+| `k >= 3` | 50 | +0.573 | +0.605 | +0.578 | +0.775 |
+
+All nine locus-threshold combinations are positive. Because the correlation is computed within a locus, locus is held fixed and the association is with population frequency alone.
+
+**Direction is a finding; magnitude is not.** The HLA-A median ratio is 614, 215 and 307 at the three thresholds, moving non-monotonically. The Kinh-only groups contain 9 to 14 alleles and their medians are unstable at that size. Only the direction is reported.
+
+Being rare in Europeans does not *determine* data poverty: `A*02:03` has a German frequency of 0.000054 and 6,382 BA measurements, and `B*46:01` has 0.0002 and 1,831. Such cases show the association is not deterministic. They do not show it is absent; that is what the correlations measure, and they are positive.
+
+### Result 3: the deficit is specific to binding-affinity assays
+
+Share of measurements by locus, across the same 65 German-common alleles:
+
+| Locus | Binding affinity | Eluted ligand |
+|---|---|---|
+| HLA-A | 62.3% | 32.2% |
+| HLA-B | 35.3% | 50.0% |
+| HLA-C | **2.4%** | **17.9%** |
+
+Both columns are computed on the same alleles, the same loci and the same population. The only thing that differs between them is the assay that generated the data, so neither the number of alleles per locus nor the ancestry of the subjects can account for the difference between the two columns. HLA-C's share of eluted-ligand data is 7.5 times its share of binding-affinity data.
+
+The direction is consistent with how the eluted-ligand datasets were assembled. The largest mono-allelic mass-spectrometry study profiled 21 HLA-C alleles alongside 31 HLA-A and 40 HLA-B, selected its alleles by where public binding data was lacking, and reported its largest prediction gains at HLA-C (Sarkizova *et al.* 2020). Why HLA-C accumulated less binding-affinity data in the first place is not established here.
+
+### Result 4: alleles with no training data at all
+
+Among alleles common in the reference population, 6 have zero BA measurements. All 6 are present in the training table with eluted-ligand data (median 2,463 peptides); none are missing from it. `C*16:01` has 5,788 EL and 0 BA; `B*49:01` has 5,959 and 0. The locus medians in Result 1 are therefore not an artefact of incomplete joining.
+
+Among alleles common in this cohort, 28 have zero BA measurements, and 15 of those are absent from the training table entirely. All 15 fall in the group that is common here and rare in Germany: **15 of 46 (33%), against 0 of 65 German-common alleles.** Every allele in the analysis set that MHCflurry has no measured data for is one that is common in this population.
+
+MHCflurry is a pan-allele model and will still return a prediction for these alleles, inferred from their pseudosequence. The statement is about direct evidence, not about whether output is produced. A companion analysis (`results/kinh_pseudoseq_distance.csv`) measures how far that inference has to reach: in pseudosequence Hamming distance to the nearest same-locus allele with at least 50 binding-affinity measurements, 100% of the data-poor HLA-A alleles, 87.5% at HLA-B and 73.6% at HLA-C lie within two substitutions. The extrapolation is short, which moderates the practical concern without removing it.
+
+---
+
 ## Limitations
+
+### Typing (Part I)
 
 **The mechanisms are not new.** OptiType's reference construction, intron reconstruction and both failure modes observed here are described in Szolek *et al.* 2014. This analysis quantifies them on long-range PCR amplicon data; it does not identify a new mechanism.
 
@@ -172,6 +299,30 @@ The trade-off is not specific to OptiType. arcasHLA calls a locus homozygous whe
 
 **Statistical power.** Several observations rest on small counts: 3 excess homozygotes, 6 discordant alleles, 5 samples in the reverse beta test.
 
+### Training-data coverage (Part II)
+
+**One reference population.** Germany DKMS stands in for "the populations that generated the training data". That is an assumption, not a measurement. A second non-European reference with a strong HLA research tradition, such as Japan, would separate "non-European" from "under-researched"; this has not been done.
+
+**The reference population is a donor registry, not a population sample.** Bone marrow donors are self-selected volunteers, and AFND records ethnicity for this population as self-assigned. Frequencies from such a panel need not match those of the resident population.
+
+**Provenance of the reference frequencies is unverified.** The primary publication for this population reports a method for estimating haplotype frequencies from homozygous individuals. Whether AFND's allele frequencies for it are direct counts or derived from that procedure has **not** been checked.
+
+**AFND frequencies do not sum to 1.** Non-zero frequencies total 0.995 at all three loci, leaving about 0.45% of chromosomes unaccounted for. Rounding does not explain a gap that size and the cause is unknown. Any renormalisation would rest on this unexplained remainder.
+
+**Threshold loss.** The German common-allele set excludes 2.6% (A), 3.9% (B) and 1.6% (C) of chromosomes. Alleles below the cut are absent from Results 1 and 3.
+
+**No uncertainty estimates on the correlations.** Group sizes are 13 to 41 per locus. A permutation test would give confidence intervals without additional dependencies; it has not been run, so the correlations are reported as point estimates only.
+
+**Tied ranks are not accounted for.** 28 of 85 alleles have zero BA measurements and therefore share a rank. Large tie blocks compress rank variance and attenuate rank correlations toward zero, so the reported values are more likely conservative than inflated. The size of the effect has not been quantified.
+
+**The 50-measurement cut is arbitrary.** `scripts/14_pseudoseq_distance.py` treats an allele as characterised when it has at least 50 binding-affinity measurements. That figure is a convenience cut with no derivation behind it, and the distance percentages quoted in Result 4 have not been checked for sensitivity to it.
+
+**Counts are not information content.** Many measurements of closely related peptides may characterise an allele less well than few diverse ones. Peptide counts are used throughout as a proxy for how well an allele is characterised, and that proxy is not validated.
+
+**Mechanism for the locus effect is not established.** HLA-C is expressed at lower levels on the cell surface than HLA-A and -B, and in-vitro binding assays required purified molecules. Whether either fact explains the assay-specific deficit has **not** been checked against the literature.
+
+**One predictor.** Only MHCflurry's training data was counted. NetMHCpan draws on an overlapping but different corpus and may be distributed differently.
+
 ---
 
 ## Reproducing
@@ -189,6 +340,16 @@ bash   scripts/09_beta_experiment.sh
 python scripts/10_compare_af.py
 ```
 
+Part II needs the MHCflurry environment and its downloaded models:
+
+```
+conda activate mhc
+python scripts/11_mhcflurry_counts.py      # per-allele BA / EL peptide counts
+python scripts/13_kinh_coverage.py         # frequency-weighted coverage
+python scripts/14_pseudoseq_distance.py    # distance to characterised relatives
+python scripts/15_locus_vs_population.py   # locus vs population, with sensitivity
+```
+
 Scripts are idempotent: completed work is skipped on re-run.
 
 Hardware used: WSL2, 8 cores, 3.7 GiB RAM (configured with 5 GB memory and 8 GB swap).
@@ -199,11 +360,11 @@ Hardware used: WSL2, 8 cores, 3.7 GiB RAM (configured with 5 GB memory and 8 GB 
 
 | Path | Contents |
 |---|---|
-| `data/` | Accession lists, published Table 1 frequencies |
+| `data/` | Accession lists, published Table 1 frequencies, reference-population frequencies |
 | `scripts/` | Numbered in execution order |
 | `results/` | Summary tables (CSV) |
 | `public/` | Genotype tables, sample IDs anonymised |
-| `docs/NOTES.md` | Working log, in Vietnamese |
+| `docs/NOTES.md` | Working log, in Vietnamese, including corrections to earlier conclusions |
 
 Per-sample genotypes are published with randomised sample codes rather than SRA accessions. The underlying reads are public, but linking a clinically meaningful genotype to a specific accession adds nothing to the analysis. The accession mapping is not distributed.
 
@@ -215,7 +376,7 @@ Raw reads, intermediate files and per-run OptiType outputs are not committed; `s
 
 Objective 1 (typing and comparison) is complete.
 
-A second objective is in progress: how much training data do peptide-MHC binding predictors actually have for the alleles common in this population? `results/mhcflurry_training_counts.csv` holds raw per-allele counts; the population-weighted analysis is not finished.
+Objective 2 (training-data coverage) is complete, with the open items listed under Part II limitations: no uncertainty estimates on the correlations, one reference population, and the unexplained 0.45% shortfall in the AFND frequencies.
 
 **Related work:** [luad-deg-analysis](https://github.com/dkhoi2505/luad-deg-analysis): differential expression in lung adenocarcinoma, including an MHC class I antigen presentation panel.
 
@@ -228,5 +389,13 @@ Do MD, Le LGH, Nguyen VT, Dang TN, Nguyen NH, Vu HA, Mai TP. High-Resolution HLA
 Szolek A, Schubert B, Mohr C, Sturm M, Feldhahn M, Kohlbacher O. OptiType: precision HLA typing from next-generation sequencing data. *Bioinformatics.* 2014;30(23):3310-3316. doi:[10.1093/bioinformatics/btu548](https://doi.org/10.1093/bioinformatics/btu548)
 
 Orenbuch R, Filip I, Comito D, Shaman J, Pe'er I, Rabadan R. arcasHLA: high-resolution HLA typing from RNAseq. *Bioinformatics.* 2020;36(1):33-40. doi:[10.1093/bioinformatics/btz474](https://doi.org/10.1093/bioinformatics/btz474)
+
+O'Donnell TJ, Rubinsteyn A, Laserson U. MHCflurry 2.0: Improved Pan-Allele Prediction of MHC Class I-Presented Peptides by Incorporating Antigen Processing. *Cell Syst.* 2020;11(1):42-48.e7. doi:[10.1016/j.cels.2020.06.010](https://doi.org/10.1016/j.cels.2020.06.010)
+
+Sarkizova S, Klaeger S, Le PM, *et al.* A large peptidome dataset improves HLA class I epitope prediction across most of the human population. *Nat Biotechnol.* 2020;38(2):199-209. doi:[10.1038/s41587-019-0322-9](https://doi.org/10.1038/s41587-019-0322-9)
+
+Gonzalez-Galarza FF, McCabe A, Santos EJ, Jones J, Takeshita LY, Ortega-Rivera ND, Del Cid-Pavon GM, Ramsbottom K, Ghattaoraya GS, Alfirevic A, Middleton D, Jones AR. Allele frequency net database (AFND) 2020 update: gold-standard data classification, open access genotype data and new query tools. *Nucleic Acids Res.* 2020;48(D1):D783-D788. doi:[10.1093/nar/gkz1029](https://doi.org/10.1093/nar/gkz1029)
+
+Seitz S, Lange V, Norman PJ, Sauter J, Schmidt AH. Estimating HLA haplotype frequencies from homozygous individuals: a technical report. *Int J Immunogenet.* 2021;48(6):490-495. doi:[10.1111/iji.12553](https://doi.org/10.1111/iji.12553)
 
 This repository is an independent reanalysis of public data. It is not affiliated with, endorsed by, or produced in collaboration with the authors of any cited work.
