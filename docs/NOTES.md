@@ -87,7 +87,7 @@ Allele pho bien -> duoc giai trinh tu gen som -> thanh khung intron
 cho cac allele hiem cung nhom.
 
 [SUY LUAN - can kiem chung o Chang 5]
-Rui ro gọi sai tap trung o ca the mang ALLELE HIEM, khong phai allele
+Rui ro goi sai tap trung o ca the mang ALLELE HIEM, khong phai allele
 pho bien. Vi du: SRR11212911 mang A*34:01 (hiem o DNA);
 SRR11212875 mang C*06:03 (khong co gen that) -> chinh la ca phan ky.
 Kiem chung: sau khi chay 101 mau x 3 seed, xem call khong hoi tu co
@@ -243,7 +243,7 @@ Nhan xet: tham chieu xay theo tieu chi "co du lieu intron", KHONG theo
 tieu chi quan trong sinh hoc. Mot allele null (A*02:43N) van lam khung
 xuong cho 202 allele khac.
 
-## Chang 8 — du lieu huan luyen MHCflurry cho allele nguoi Kinh
+## Chang 8 -- du lieu huan luyen MHCflurry cho allele nguoi Kinh
 
 ### 8.1 Dem truc tiep (trung vi co trong so AF)
          BA      tong peptide
@@ -789,3 +789,88 @@ Da tra:
   (Sarkizova 2020), khong phai tu mono-allelic MS noi chung.
 [KHONG XAC LAP] Nguyen nhan vi sao HLA-C it du lieu BA tu dau. Sarkizova
   khong noi, va README gio ghi ro la chua xac lap.
+
+
+## Chang 8.6 -- Doi chieu Sarkizova 2020 va hai sua chu (2026-10-12)
+
+Khoi da tu mo bai Sarkizova et al. 2020 (Nat Biotechnol 38:199-209) va doi
+chieu ba diem. CA BA DEU DUNG:
+  1. "the collection of 95 cell lines (31 HLA-A, 40 HLA-B, 21 HLA-C and
+     3 HLA-G)" -- Results, tieu muc "Systematic LC-MS/MS profiling of HLA
+     class I ligands from mono-allelic cell lines".
+  2. Chon allele theo cho thieu du lieu gan ket cong khai -- co trong bai.
+  3. "+20% PPV for HLA-C and +38% for HLA-G" -- Results, tieu muc
+     "Generation and performance of allele-and-length-specific and
+     pan-allele-pan-length models".
+
+### SUA 1 -- 'predicts' -> 'is associated with' (README dong 9)
+Spearman do TUONG QUAN, khong do nhan qua. Tu 'predicts' trong tieng Anh de
+bi doc thanh nhan qua. README khong co bang chung nhan qua nao, nen dung tu
+yeu hon cho dung. Chi mot cho trong README dung tu nay theo nghia do; cac
+cho khac la 'predictor'/'prediction' chi cong cu, giu nguyen.
+
+### SUA 2 -- them 'among the classical loci' (README dong 266)
+Diem 3 o tren chinh la cho cau cu YEU: bai bao bao HLA-G duoc +38%, CAO HON
+HLA-C (+20%). Cau "reported its largest prediction gains at HLA-C" vi vay
+bat be duoc. HLA-G la class I khong co dien, OptiType khong goi, nen no
+ngoai pham vi bai nay -- gioi han vao 'classical loci' (A, B, C) vua dung
+voi bai bao vua dung voi pham vi cua repo.
+BAI HOC: khi trich mot so sanh ("lon nhat", "cao nhat") tu bai bao khac,
+phai kiem xem bai do con hang muc nao cao hon khong, ke ca hang muc nam
+ngoai pham vi cua minh.
+
+### Them scripts/16_pseudoseq_sensitivity.py
+Chay lai phan tich khoang cach pseudosequence o nguong BA 25 / 50 / 100 / 200
+de tra loi: ba phan tram o Ket qua 4 (100 / 87.5 / 73.6%) co phu thuoc con so
+50 tuy tien khong?
+Thiet ke: khi nguong T tang thi tap "ngheo" rong ra VA tap "da dac trung" hep
+lai cung luc, ca hai deu lam khoang cach tang => T=200 la phep thu khac
+nghiet nhat.
+Tu kiem: script tinh lai tu dau, khong dung lai logic script 14, nhung o T=50
+PHAI tai tao dung 100 / 87.5 / 73.6. Lech thi no bao ">>> LECH" va phai dung
+lai. (Da thu voi du lieu gia lap: canh bao nay no dung nhu thiet ke.)
+KET QUA: chua chay tren du lieu that.
+
+
+## Chang 8.7 -- Do nhay nguong NGUONG_BA: ket qua (2026-10-12)
+
+Chay scripts/16_pseudoseq_sensitivity.py tren du lieu that.
+
+DOI CHIEU DAT: o T=50 script 16 tai tao DUNG 100.0 / 87.5 / 73.6 cua script 14,
+du no tinh lai tu dau va khong dung lai logic script 14. => hai script dong y,
+cac nguong khac dang tin.
+
+% (trong so AF) allele Kinh ngheo nam trong vong 2 thay the:
+  nguong   HLA-A          HLA-B          HLA-C
+    25     100.0% (n= 8)   86.3% (n=19)   96.3% (n= 8)
+    50     100.0% (n= 9)   87.5% (n=21)   73.6% (n=11)   <- script 14
+   100     100.0% (n= 9)   82.8% (n=23)   73.6% (n=11)
+   200      96.3% (n=11)   65.8% (n=24)   53.6% (n=14)
+
+[XAC LAP] Ket luan "phep ngoai suy la ngan" KHONG vung deu theo locus.
+  HLA-A: vung o moi nguong (100 -> 96.3%).
+  HLA-B: sut vua phai (87.5 -> 65.8%).
+  HLA-C: sut manh (73.6 -> 53.6%). O T=200 chi hon mot nua chut.
+  => Khong duoc viet "the extrapolation is short" khong kem dieu kien.
+     Da sua README: neu ro ket qua theo tung locus va tung nguong.
+
+[XAC LAP] PHAT HIEN MOI, va no lam cau chuyen locus MANH HON:
+  Locus thieu du lieu BA nhat (HLA-C: 2.4% ty trong BA) cung la locus ma
+  phuong an du phong pseudosequence YEU NHAT. Hai han che CONG DON cung
+  chieu, khong bu tru nhau.
+  Truoc do README ngam y phuong an du phong bu lai duoc cho thieu du lieu.
+  Dieu do dung voi HLA-A, KHONG dung voi HLA-C.
+
+[SUY LUAN] Vi sao HLA-C sut manh: chinh vi it allele HLA-C dat nguong, nen
+  tap "da dac trung" o locus C mong, va allele ngheo phai voi xa hon de tim
+  ho hang. Day la cung mot nguyen nhan voi thieu hut BA, nhin tu goc khac.
+
+GHI CHU: o T=25 HLA-C len 96.3% roi tut xuong 73.6% o T=50 -- khong don dieu.
+  Co che: C*01:02 co dung BA=25, nen o T=25 no CHUYEN TU nhom ngheo SANG nhom
+  da dac trung va thanh diem tham chieu cho cac allele C khac. Tap ngheo co
+  lai tu 11 xuong 8. Day la hanh vi dung cua thiet ke, khong phai loi.
+
+BAI HOC: mot nguong tuy tien khong chi can duoc THU NHAN, no can duoc THU.
+  Neu chi ghi "nguong nay tuy tien" roi dung lai, ta se bo lo mot phat hien
+  that (hai han che cong don). Phep thu do nhay re hon nhieu so voi gia tri
+  no mang lai.
