@@ -6,7 +6,7 @@ OptiType reproduces the published HLA class I allele frequencies of this cohort 
 
 These patterns are consistent with limitations the OptiType authors described for closely related alleles (Szolek *et al.* 2014). The contribution of this repository is to measure them on a data type the tool was not benchmarked on, and to show that the obvious parameter fix trades one error for another.
 
-A second question follows from the first. Having established which alleles this cohort carries, how much training data do peptide-MHC binding predictors actually have for them? Using Germany DKMS (n = 3,456,066) as a reference population to break the confound between locus and ancestry, both effects turn out to be present and to compound. Among alleles common in Germany, median binding-affinity measurements differ 24-fold between HLA-A and HLA-C; within each locus, German frequency is associated with measurement count (Spearman +0.57 to +0.82). 15 of 46 alleles common here but not in Germany have no training data at all.
+A second question follows from the first. Having established which alleles this cohort carries, how much training data do peptide-MHC binding predictors actually have for them? Using Germany DKMS (n = 3,456,066) as a reference population to break the confound between locus and ancestry, both effects turn out to be present and to compound. Both are documented elsewhere (Glynn *et al.* 2025; Atkins *et al.* 2024); what is added here is a split by assay type. Among alleles common in Germany, median binding-affinity measurements differ 24-fold between HLA-A and HLA-C; within each locus, German frequency is associated with measurement count (Spearman +0.57 to +0.82). 15 of 46 alleles common here but not in Germany have no training data at all.
 
 **Scope:** HLA class I (A, B, C) only. The source study also typed DRB1 and DQB1; OptiType does not support class II. Part II examines MHCflurry 2.2.1 only; NetMHCpan's training data is not covered.
 
@@ -40,7 +40,7 @@ Within each locus, alleles common in this cohort but rare in Germany have far fe
 
 **6. The deficit is specific to binding-affinity assays.**
 
-HLA-C holds 17.9% of eluted-ligand measurements but 2.4% of binding-affinity measurements, a 7.5-fold discrepancy on the same alleles in the same population. 15 of 46 alleles common here but not in Germany have no entry in the training data at all; none of the 65 German-common alleles lack one.
+HLA-C holds 17.9% of eluted-ligand measurements but 2.4% of binding-affinity measurements, a 7.3-fold discrepancy on the same alleles in the same population. 15 of 46 alleles common here but not in Germany have no entry in the training data at all; none of the 65 German-common alleles lack one.
 
 ---
 
@@ -87,7 +87,7 @@ Reads were downloaded from ENA, filtered with `fastp` (`--length_required 100`, 
 
 Each sample was run with **three independent seeds** (100, 200, 300) to separate reproducible calls from calls that depend on which reads happened to be drawn. 303 runs completed, 0 failures.
 
-Subsampling was necessary rather than convenient. On the smallest sample, using all reads took 15m25s and 4.44 GB peak RAM, versus 1m03s and 1.43 GB at 20,000 pairs, for an identical genotype. Cost scales non-linearly: 4.6x the reads produced 14.7x the runtime.
+Subsampling was necessary rather than convenient. On the smallest sample, using all reads took 15m25s and 4.44 GB peak RAM, versus 1m03s and 1.43 GB at 20,000 pairs, for an identical genotype. The full-read timing was measured in a separate run and is not reproduced by any script here; the scripted depth ladder covers 2,000 to 40,000 pairs. Cost scales non-linearly: 4.6x the reads (91,801 cleaned pairs against 20,000) produced 14.7x the runtime.
 
 Comparison against the published Table 1 was done at **2-field resolution**. OptiType does not resolve 3-field differences, and allele names have changed across IMGT/HLA releases. The source study's 3-field calls are therefore **not** independently checked here.
 
@@ -172,6 +172,8 @@ The trade-off is not specific to OptiType. arcasHLA calls a locus homozygous whe
 
 A binding predictor's usefulness for a given allele depends on how much measured data that allele contributed to training. MHCflurry 2.2.1 ships per-allele counts of its training peptides, split by assay type: **binding affinity** (BA, in-vitro IC50, one peptide per experiment) and **eluted ligand** (EL, peptides recovered from cell surfaces by mass spectrometry, thousands per experiment). Joining those counts to this cohort's allele frequencies asks a direct question: are the alleles these 101 people carry the alleles the predictor was trained on?
 
+Both effects below are already documented. Glynn *et al.* 2025 report that 5.6% of HLA-A pseudosequences carry any binding-affinity data, 5.1% at HLA-B and 2.4% at HLA-C, that roughly 87% of class I pseudosequences carry none, and that TCGA patients recorded as White have significantly more training data behind their alleles than Black, Asian or Pacific Islander patients. Atkins *et al.* 2024 measure the same disparity by individual: using US marrow-registry frequencies, between 5.1% (HLA-A) and 33.6% (HLA-DRB1) of Vietnamese individuals carry an allele absent from NetMHCpan's training data, against 0.4% to 2.6% of European Caucasians. What follows is not a new disparity. It is the same disparity measured in one high-resolution cohort, with one distinction neither paper draws: whether the deficit is specific to the binding-affinity assay. Glynn's percentages count alleles while the shares in Result 3 below count measurements, so the two are not comparable even where they happen to coincide.
+
 ### The confound, and how it was broken
 
 A first pass showed the expected gradient: alleles common in this cohort have less data at HLA-C than at HLA-A, and the alleles with least data are mostly ones rare outside East Asia. Two explanations fit equally well.
@@ -247,6 +249,8 @@ Rank correlation between German frequency and BA count, over alleles common in t
 
 All nine locus-threshold combinations are positive. Because the correlation is computed within a locus, locus is held fixed and the association is with population frequency alone.
 
+A permutation test puts a number on that (`scripts/17_permutation_test.py`, `results/permutation_spearman.csv`). Shuffling German frequency against measurement count 10,000 times within each group gives the distribution of rho under no association, and the observed value falls outside the central 95% of that distribution in all twelve groups. Two-sided p, by the add-one estimator (1 + exceedances) / (1 + 10,000), runs from 0.0001 to 0.019; the weakest cell is HLA-A at `k >= 3` (rho +0.605, n = 15, p = 0.019). The nine locus-threshold tests are nested rather than independent, so a simple multiplicity correction does not apply cleanly. Permutation also handles the tie blocks correctly, because it shuffles the ranks themselves; those blocks run from 23% to 37% of each group.
+
 **Direction is a finding; magnitude is not.** The HLA-A median ratio is 614, 215 and 307 at the three thresholds, moving non-monotonically. The Kinh-only groups contain 9 to 14 alleles and their medians are unstable at that size. Only the direction is reported.
 
 Being rare in Europeans does not *determine* data poverty: `A*02:03` has a German frequency of 0.000054 and 6,382 BA measurements, and `B*46:01` has 0.0002 and 1,831. Such cases show the association is not deterministic. They do not show it is absent; that is what the correlations measure, and they are positive.
@@ -261,9 +265,11 @@ Share of measurements by locus, across the same 65 German-common alleles:
 | HLA-B | 35.3% | 50.0% |
 | HLA-C | **2.4%** | **17.9%** |
 
-Both columns are computed on the same alleles, the same loci and the same population. The only thing that differs between them is the assay that generated the data, so neither the number of alleles per locus nor the ancestry of the subjects can account for the difference between the two columns. HLA-C's share of eluted-ligand data is 7.5 times its share of binding-affinity data.
+Both columns are computed on the same alleles, the same loci and the same population. The only thing that differs between them is the assay that generated the data, so neither the number of alleles per locus nor the ancestry of the subjects can account for the difference between the two columns. HLA-C's share of eluted-ligand data is 7.3 times its share of binding-affinity data. That ratio is computed from the raw totals in Result 1 (87,891/491,854 against 3,120/128,180); dividing the rounded percentages in the table above gives 7.5 instead.
 
 The direction is consistent with how the eluted-ligand datasets were assembled. The largest mono-allelic mass-spectrometry study profiled 21 HLA-C alleles alongside 31 HLA-A and 40 HLA-B, selected its alleles by where public binding data was lacking, and reported its largest prediction gains among the classical loci at HLA-C (Sarkizova *et al.* 2020). Why HLA-C accumulated less binding-affinity data in the first place is not established here.
+
+Atkins *et al.* 2024 tested whether this gap degrades prediction and largely found that it does not: across seven class I alleles with no training data, NetMHCpan performed slightly better than its own average rather than worse, a difference that was statistically significant but small. Their evaluation used eluted-ligand data, and they state that they ran no binding-affinity experiments. Eluted ligand is the assay this analysis finds is not deficient. Four of the seven alleles they tested are carried here: `A*24:07` (0.030), `A*34:01` (0.015), `C*03:02` (0.089) and `C*04:03` (0.074), the last two accounting for 33 of 202 chromosomes at HLA-C. Whether a binding-affinity deficit affects binding-affinity prediction is therefore still open. Nothing here shows that it does: this analysis counts how much data exists, not how well a model performs on it.
 
 ### Result 4: alleles with no training data at all
 
@@ -271,7 +277,9 @@ Among alleles common in the reference population, 6 have zero BA measurements. A
 
 Among alleles common in this cohort, 28 have zero BA measurements, and 15 of those are absent from the training table entirely. All 15 fall in the group that is common here and rare in Germany: **15 of 46 (33%), against 0 of 65 German-common alleles.** Every allele in the analysis set that MHCflurry has no measured data for is one that is common in this population.
 
-MHCflurry is a pan-allele model and will still return a prediction for these alleles, inferred from their pseudosequence. The statement is about direct evidence, not about whether output is produced. A companion analysis (`results/kinh_pseudoseq_distance.csv`) measures how far that inference has to reach: in pseudosequence Hamming distance to the nearest same-locus allele with at least 50 binding-affinity measurements, 100% of the data-poor HLA-A alleles, 87.5% at HLA-B and 73.6% at HLA-C lie within two substitutions. How short that reach is depends on where the threshold is set. Repeating the measurement at 25, 100 and 200 measurements (`scripts/16_pseudoseq_sensitivity.py`, `results/pseudoseq_sensitivity.csv`) leaves HLA-A essentially unchanged (100%, 100% and 96.3% within two substitutions) but moves HLA-B from 87.5% to 65.8% and HLA-C from 73.6% to 53.6% at the strictest cut. The extrapolation is therefore short at HLA-A and only partly short at HLA-C. The locus with the largest training-data deficit is also the locus where the pan-allele fallback has to reach furthest, so the two limitations compound rather than offset.
+MHCflurry is a pan-allele model and will still return a prediction for these alleles, inferred from their pseudosequence. The statement is about direct evidence, not about whether output is produced. A companion analysis (`results/kinh_pseudoseq_distance.csv`) measures how far that inference has to reach: in pseudosequence Hamming distance to the nearest same-locus allele with at least 50 binding-affinity measurements, the alleles within two substitutions account for 100% of the data-poor allele frequency at HLA-A, 87.5% at HLA-B and 73.6% at HLA-C. How short that reach is depends on where the threshold is set. Repeating the measurement at 25, 100 and 200 measurements (`scripts/16_pseudoseq_sensitivity.py`, `results/pseudoseq_sensitivity.csv`) leaves HLA-A essentially unchanged (100%, 100% and 96.3% within two substitutions) but moves HLA-B from 87.5% to 65.8% and HLA-C from 73.6% to 53.6% at the strictest cut. The extrapolation is therefore short at HLA-A and only partly short at HLA-C. HLA-C sits below HLA-A at all four thresholds tested and under both weighting schemes, so the locus with the largest training-data deficit is also the one where the pan-allele fallback reaches furthest, and the two limitations compound rather than offset.
+
+These percentages are frequency-weighted: each allele counts for how often it is carried, because every chromosome carries exactly one allele per locus and the question is what share of this population's HLA burden the fallback can reach. The weighting changes the ranking. By unweighted allele count the figures at the 50-measurement cut are 100% (9/9) at HLA-A, 81.0% (17/21) at HLA-B and 81.8% (9/11) at HLA-C, which places HLA-C just above HLA-B rather than below it. The direction of that shift is itself informative: at HLA-B the alleles furthest from a characterised relative are the rarer ones, while at HLA-C they are among the more common. The ordering of HLA-B against HLA-C is therefore not stable across thresholds or weighting schemes, and no claim here rests on it. The HLA-C against HLA-A comparison is stable in all eight threshold-by-scheme combinations.
 
 ---
 
@@ -311,11 +319,11 @@ MHCflurry is a pan-allele model and will still return a prediction for these all
 
 **Threshold loss.** The German common-allele set excludes 2.6% (A), 3.9% (B) and 1.6% (C) of chromosomes. Alleles below the cut are absent from Results 1 and 3.
 
-**No uncertainty estimates on the correlations.** Group sizes are 13 to 41 per locus. A permutation test would give confidence intervals without additional dependencies; it has not been run, so the correlations are reported as point estimates only.
+**The correlations are tested but not bounded.** The permutation test in Result 2 rejects chance as an explanation at every group size, including HLA-C at `k >= 3`, where 13 alleles leave chance able to produce |rho| up to 0.56. It does not bound rho itself: a permutation test addresses the null hypothesis, not the magnitude, so the coefficients remain point estimates. A bootstrap would give intervals and has not been run. Group sizes are 13 to 41 per locus.
 
-**Tied ranks are not accounted for.** 28 of 85 alleles have zero BA measurements and therefore share a rank. Large tie blocks compress rank variance and attenuate rank correlations toward zero, so the reported values are more likely conservative than inflated. The size of the effect has not been quantified.
+**Tied ranks are not accounted for.** 28 of 85 alleles have zero BA measurements and therefore share a rank. Large tie blocks compress rank variance and attenuate rank correlations toward zero, so the reported values are more likely conservative than inflated. The size of the effect has not been quantified. It does not affect the permutation p-values in Result 2, which shuffle the ranks themselves and so preserve the tie structure; attenuation applies to the value of each coefficient, not to whether it exceeds chance. Tie blocks run from 23% to 37% across the twelve groups.
 
-**The 50-measurement cut is arbitrary, and the distance figures are sensitive to it at HLA-B and HLA-C.** `scripts/14_pseudoseq_distance.py` treats an allele as characterised when it has at least 50 binding-affinity measurements. That figure is a convenience cut with no derivation behind it. Repeating the analysis at 25, 100 and 200 shows HLA-A is stable (100% to 96.3% within two substitutions) while HLA-B falls from 87.5% to 65.8% and HLA-C from 73.6% to 53.6%. The claim that the extrapolation is short therefore holds at HLA-A under any threshold tested, and at HLA-B and HLA-C only under lenient ones. Any figure quoted from this analysis should carry its threshold.
+**The 50-measurement cut is arbitrary, and the distance figures are sensitive to it at HLA-B and HLA-C.** `scripts/14_pseudoseq_distance.py` treats an allele as characterised when it has at least 50 binding-affinity measurements. That figure is a convenience cut with no derivation behind it. Repeating the analysis at 25, 100 and 200 shows HLA-A is stable (100% to 96.3% within two substitutions) while HLA-B falls from 87.5% to 65.8% and HLA-C from 73.6% to 53.6%. The claim that the extrapolation is short therefore holds at HLA-A under any threshold tested, and at HLA-B and HLA-C only under lenient ones. Any figure quoted from this analysis should carry its threshold. The figures are frequency-weighted; by unweighted allele count HLA-C is level with HLA-B at the lenient thresholds and below it only at 200. The comparison of HLA-C against HLA-A holds under both schemes at all four thresholds.
 
 **Counts are not information content.** Many measurements of closely related peptides may characterise an allele less well than few diverse ones. Peptide counts are used throughout as a proxy for how well an allele is characterised, and that proxy is not validated.
 
@@ -331,13 +339,15 @@ MHCflurry is a pan-allele model and will still return a prediction for these all
 conda env create -f environment-hla.yml
 conda activate hla
 
-bash   scripts/01_fetch.sh           # download from ENA (~10.6 GB)
-bash   scripts/02_filter.sh          # fastp, then 101 x 3 OptiType runs (~5 h)
-python scripts/06_gather.py          # 303 results -> consensus table
-python scripts/07_reference_audit.py
-python scripts/08_stability.py
-bash   scripts/09_beta_experiment.sh
-python scripts/10_compare_af.py
+bash   scripts/01_fetch.sh           # 101 runs from ENA (~10.6 GB), integrity check, then fastp
+bash   scripts/05_run_all.sh         # 101 x 3 OptiType runs, 20,000 pairs, seeds 100/200/300 (~5 h)
+python scripts/06_gather.py          # 303 results -> consensus genotype table
+python scripts/07_reference_audit.py # audit the reference bundled with OptiType
+python scripts/08_stability.py       # call stability across the three seeds
+bash   scripts/09_beta_experiment.sh # OptiType --beta sweep
+python scripts/09b_beta_summary.py   # beta sweep -> one table
+python scripts/10_compare_af.py      # allele frequencies against published Table 1
+python scripts/12_anonymize.py       # write public/ with randomised sample codes
 ```
 
 Part II needs the MHCflurry environment and its downloaded models:
@@ -349,7 +359,19 @@ python scripts/13_kinh_coverage.py         # frequency-weighted coverage
 python scripts/14_pseudoseq_distance.py    # distance to characterised relatives
 python scripts/15_locus_vs_population.py   # locus vs population, with sensitivity
 python scripts/16_pseudoseq_sensitivity.py # distance vs BA threshold (25-200)
+python scripts/17_permutation_test.py      # permutation test for Result 2
 ```
+
+Two further scripts measure cost rather than produce results. Nothing above depends on them, but the runtime and memory figures in Methods come from them:
+
+```
+bash   scripts/03_ladder.sh          # 3 samples x 5 read depths, under /usr/bin/time -v
+python scripts/03b_ladder_summary.py # depth ladder -> one table
+```
+
+Two scripts are on neither path. `scripts/02_filter.sh` re-runs the fastp step, skipping finished samples, and then calls `05_run_all.sh`; it is the way to resume an interrupted typing run without downloading again. `scripts/04_seedtest.sh` typed three samples at seeds 200 and 300 before the full run; `05_run_all.sh` covers the same ground for all 101 samples and no figure here comes from its output.
+
+`05_run_all.sh` deletes each subsample immediately after typing it, which is why the pipeline fits on a machine with little free disk. The subsample size and the three seeds are set at the top of that script.
 
 Scripts are idempotent: completed work is skipped on re-run.
 
@@ -362,7 +384,7 @@ Hardware used: WSL2, 8 cores, 3.7 GiB RAM (configured with 5 GB memory and 8 GB 
 | Path | Contents |
 |---|---|
 | `data/` | Accession lists, published Table 1 frequencies, reference-population frequencies |
-| `scripts/` | Numbered in execution order |
+| `scripts/` | Numbered roughly in execution order; `Reproducing` gives the paths |
 | `results/` | Summary tables (CSV) |
 | `public/` | Genotype tables, sample IDs anonymised |
 | `docs/NOTES.md` | Working log, in Vietnamese, including corrections to earlier conclusions |
@@ -394,6 +416,10 @@ Orenbuch R, Filip I, Comito D, Shaman J, Pe'er I, Rabadan R. arcasHLA: high-reso
 O'Donnell TJ, Rubinsteyn A, Laserson U. MHCflurry 2.0: Improved Pan-Allele Prediction of MHC Class I-Presented Peptides by Incorporating Antigen Processing. *Cell Syst.* 2020;11(1):42-48.e7. doi:[10.1016/j.cels.2020.06.010](https://doi.org/10.1016/j.cels.2020.06.010)
 
 Sarkizova S, Klaeger S, Le PM, *et al.* A large peptidome dataset improves HLA class I epitope prediction across most of the human population. *Nat Biotechnol.* 2020;38(2):199-209. doi:[10.1038/s41587-019-0322-9](https://doi.org/10.1038/s41587-019-0322-9)
+
+Atkins TK, Solanki A, Vasmatzis G, Cornette J, Riedel M. Evaluating NetMHCpan performance on non-European HLA alleles not present in training data. *Front Immunol.* 2024;14:1288105. doi:[10.3389/fimmu.2023.1288105](https://doi.org/10.3389/fimmu.2023.1288105)
+
+Glynn E, Ghersi D, Singh M. Toward equitable major histocompatibility complex binding predictions. *Proc Natl Acad Sci U S A.* 2025;122(8):e2405106122. doi:[10.1073/pnas.2405106122](https://doi.org/10.1073/pnas.2405106122)
 
 Gonzalez-Galarza FF, McCabe A, Santos EJ, Jones J, Takeshita LY, Ortega-Rivera ND, Del Cid-Pavon GM, Ramsbottom K, Ghattaoraya GS, Alfirevic A, Middleton D, Jones AR. Allele frequency net database (AFND) 2020 update: gold-standard data classification, open access genotype data and new query tools. *Nucleic Acids Res.* 2020;48(D1):D783-D788. doi:[10.1093/nar/gkz1029](https://doi.org/10.1093/nar/gkz1029)
 
