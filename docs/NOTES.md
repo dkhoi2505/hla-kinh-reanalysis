@@ -874,3 +874,508 @@ BAI HOC: mot nguong tuy tien khong chi can duoc THU NHAN, no can duoc THU.
   Neu chi ghi "nguong nay tuy tien" roi dung lai, ta se bo lo mot phat hien
   that (hai han che cong don). Phep thu do nhay re hon nhieu so voi gia tri
   no mang lai.
+
+--------------------------------------------------------------------
+## Chang 9.1 -- MUC 1: loi lam tron (7.5 -> 7.3)
+
+### Van de
+README ghi ti trong EL cua HLA-C gap "7.5 lan" ti trong BA. Con so do
+chi ra duoc khi chia HAI PHAN TRAM DA LAM TRON: 17.9 / 2.4 = 7.4583.
+
+### Gia tri that
+So tho lay tu chinh bang Result 1 cua README (Total BA, Total EL):
+    HLA-A  79,825 BA   158,134 EL
+    HLA-B  45,235 BA   245,829 EL
+    HLA-C   3,120 BA    87,891 EL
+    => tong BA = 128,180 ; tong EL = 491,854
+    ti trong HLA-C: BA = 3120/128180 = 2.4341% ; EL = 87891/491854 = 17.8693%
+    ti so that = 7.3413  ->  7.3
+
+Ba duong tinh doc lap deu cho 7.3413:
+  1. %EL / %BA (hai ti trong chinh xac)
+  2. (EL_C/BA_C) x (tBA/tEL)  -- dai so tuong duong, khong qua ti trong
+  3. phan so chinh xac tuyet doi 14443421/1967416
+Duong 3 dung so nguyen nen loai han kha nang sai so dau phay dong.
+Sai 1.6% o gia tri, khong phai sai o chu so cuoi.
+
+### Kiem tra so 0
+Tai tao ca sau phan tram cua bang Result 3 tu sau so tho: 6/6 khop
+(62.3 / 35.3 / 2.4 va 32.2 / 50.0 / 17.9). Nen so tho va bang nhat quan
+voi nhau; loi CHI nam o ti so.
+
+### Da sua
+  a) Key findings muc 6 : "a 7.5-fold" -> "a 7.3-fold"
+  b) Result 3 cau ket   : "is 7.5 times" -> "is 7.3 times", VA them cau
+     noi ro ti so tinh tu tong goc.
+Ly do them cau o (b): bang Result 3 chi in 1 chu so thap phan, nen nguoi
+doc tu chia 17.9/2.4 se duoc 7.5. Neu khong noi ro thi SAU khi sua README
+se trong nhu co loi noi tai -- te hon truoc khi sua. Cau them bien mot cho
+de bi bat loi thanh mot cho the hien phan biet duoc gia tri goc va gia tri
+hien thi.
+
+### Ra soat toan README: con ti so nao tinh tu gia tri da lam tron?
+Kiem moi so sanh dang ti so. Bay ti so tinh tu SO THO, tat ca dung:
+  EL:BA tai A/B/C  1.9810 / 5.4345 / 28.1702  -> 2.0 / 5.4 / 28.2
+  24-fold   = 4300/177        = 24.2938
+  29.9-fold = 2872506/96030   = 29.9126
+  14.7x     = 925s/63s        = 14.6825
+  4.6x reads                  = 4.6000
+
+Tim them MOT truong hop cung ho loi: "about 4.7 times as often" (Key
+findings) lay tu 39.1% / 8.4%, ca hai da lam tron. Chan tren chan duoi
+cua ti so that la [4.5976, 4.6886) -- khoang nay CAT NGANG nguong 4.65,
+nen TRUOC khi do thi khong the biet 4.6 hay 4.7.
+
+Da do tu so dem goc (results/stability_by_allele.csv):
+  hiem     68 allele,  110 xuat_hien,  43 bat_on  ->  39.0909%
+  pho bien 40 allele,  512 xuat_hien,  43 bat_on  ->   8.3984%
+  ti so chinh xac = 256/55 = 4.654545  -> 4.7
+  ti so tu % lam tron      = 4.654762  -> 4.7
+  chenh lech hai duong     = 0.000216
+
+=> "4.7" DUNG, KHONG SUA.
+Ly do cau truc khien no ben: gay_bat_on cua hai nhom BANG NHAU (43 va 43),
+nen hai so 43 triet tieu va ti so rut con 512/110 = 256/55. Mot ti so rut
+gon thanh phan so hai so nguyen nho thi rat ben voi lam tron.
+Day la truong hop PHUONG PHAP LONG nhung KET QUA DUNG -- dung do may, khong
+do can than. Van dung khi kiem, va dung khi khong khang dinh truoc khi do.
+
+Kiem nhat quan phu, dat: dinh nghia "rare = 3 or fewer occurrences" doi hoi
+hiem <= 68x3 = 204 (co 110, dat) va pho bien >= 40x4 = 160 (co 512, dat).
+
+### Bai hoc ghi lai
+1. Ti so phai tinh tu SO THO, khong bao gio tu gia tri da in ra. Ba lan
+   mac loi nay trong du an (0.005 = 1/202, 2/202, va 7.5) deu cung mot goc:
+   lay gia tri HIEN THI lam gia tri GOC.
+2. Khi phat hien mot ti so tinh tu % da lam tron, DUNG ket luan no sai.
+   Tinh chan tren chan duoi truoc. Neu khoang khong cat nguong lam tron thi
+   con so van dung, chi phuong phap la long.
+3. Sua mot con so trong van ban ma de nguyen bang so lam tron ben tren co
+   the TAO RA mot ve mau thuan moi. Luon doc lai doan da sua bang mat nguoi
+   doc, khong chi kiem chuoi.
+4. Loi phuong phap: trong script va, dat dieu kien kiem
+   README.count("87.5%") == 2 ma CHUA HE DO. Do ra la 1, script bao LECH
+   ngay lan chay dau. Da doi thanh bat bien dung: so lan "87.5%" KHONG DOI
+   truoc va sau khi va -- ve nay khong can biet con so la bao nhieu.
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+## Chang 9.2 -- MUC 2: phan tram pseudosequence co trong so tan suat
+
+### Van de
+Sau con so 100 / 87.5 / 73.6 / 96.3 / 65.8 / 53.6 deu CO TRONG SO TAN SUAT
+(frequency-weighted) nhung README khong noi, va cau chu doc nhu ti le dem
+allele.
+
+### Tu kiem (scripts tam, khong commit)
+Tinh lai CA HAI cach tu results/pseudoseq_sensitivity.csv, moi nguong:
+                co trong so        dem thuan
+  T= 25  A 100.0  B 86.3  C 96.3   A 100.0 (8/8)   B 78.9 (15/19)  C 87.5 (7/8)
+  T= 50  A 100.0  B 87.5  C 73.6   A 100.0 (9/9)   B 81.0 (17/21)  C 81.8 (9/11)
+  T=100  A 100.0  B 82.8  C 73.6   A 100.0 (9/9)   B 73.9 (17/23)  C 81.8 (9/11)
+  T=200  A  96.3  B 65.8  C 53.6   A  90.9 (10/11) B 70.8 (17/24)  C 50.0 (7/14)
+
+=> Cach CO TRONG SO tai tao dung 6/6 con so README. Vay README dang dung
+   trong so ma khong khai bao.
+
+### Phat hien them 1: dao chieu o HAI nguong, khong phai mot
+Chi hai nguong README trich (T=50, T=200) tung duoc kiem. Chay ca bon:
+  T= 25  cung chieu  (C tot hon B o ca hai cach)
+  T= 50  DAO CHIEU   (trong so: C te hon B | dem thuan: C tot hon B)
+  T=100  DAO CHIEU   (nhu tren)
+  T=200  cung chieu  (C te hon B o ca hai cach)
+T=100 cung dao. Van de khong chi o mot nguong.
+
+### Phat hien them 2 (nang hon): cau ket luan cu qua manh
+Cau cu: "The locus with the largest training-data deficit is also the locus
+where the pan-allele fallback has to reach furthest."
+Dieu kien kiem duoc: HLA-C phai la locus THAP NHAT trong ba.
+  locus thap nhat, 8 o (4 nguong x 2 cach):
+    T= 25  trong so -> B   | dem thuan -> B
+    T= 50  trong so -> C   | dem thuan -> B
+    T=100  trong so -> C   | dem thuan -> B
+    T=200  trong so -> C   | dem thuan -> C
+  => "C thap nhat trong ba locus"  dung  4/8 o
+  => "C thap hon A"                dung  8/8 o
+
+Cau cu SAI o T=25 NGAY CA KHI co trong so (B 86.3 thap hon C 96.3). README
+chua bao gio in hai con so do, du T=25 nam trong dai da chay.
+
+Da thu hep tuyen bo xuong cap A so C (ben 8/8). Day cung la dung cap ma
+Result 1 dung de do thieu hut (trung vi BA 4.300 so 177, khoang cach 24 lan),
+nen thu hep khong lam yeu lap luan "compound" ma lam no khop cap do hon.
+
+### Co che cua viec dao chieu
+Huong lech giua hai cach noi len ALLELE NAO nam xa:
+  HLA-B T=50: trong so 87.5 CAO hon dem thuan 81.0
+              => allele nam xa la allele IT pho bien, trong so lam B dep hon
+  HLA-C T=50: trong so 73.6 THAP hon dem thuan 81.8
+              => allele nam xa la allele PHO BIEN hon trung binh, trong so
+                 lam C xau hon
+Huong nay ben: chenh 6.5 va 8.2 diem phan tram, con lam tron chi gay sai so
+0.05 diem. DO LON thi KHONG tinh duoc tu day -- muon biet hai allele HLA-C
+nam xa co AF bao nhieu thi can AF tung allele, khong duoc suy tu 73.6% da
+lam tron (dung la loi cua MUC 1).
+
+Day la ly do thuc chat de chon trong so lam cach chinh: o HLA-C, allele ma
+mo hinh phai ngoai suy xa nhat lai la allele TUONG DOI PHO BIEN trong quan
+the nay. Dem thuan che mat dieu do; trong so phoi ra. Cau hoi co y nghia la
+"bao nhieu phan ganh nang HLA cua quan the nam trong tam voi cua phuong an
+du phong", va moi nhiem sac the mang dung mot allele moi locus, nen trong so
+tan suat la phep tinh tra loi dung cau do.
+
+### Da sua
+  a) Result 4 cau dau  : doi khung tu "100% cua cac allele" sang "100% cua
+     TAN SUAT allele thieu du lieu", de con so khong con doc nhu ti le dem.
+  d) Result 4, DOAN MOI tach rieng: khai bao frequency-weighted, noi ro vi
+     sao chon trong so, in ba con so dem thuan 100 (9/9) / 81.0 (17/21) /
+     81.8 (9/11), neu co che (allele xa o B la allele hiem, o C la allele
+     pho bien hon), va chot rang cap A so C ben 8/8 o.
+     Ly do tach doan: gop het vao mot doan thi doan do dai 290 tu, qua day
+     cho README se nam trong CV. Doan 1 giu phat hien + ket luan; doan 2 lo
+     phuong phap.
+  b) Result 4 cau ket  : thu hep tu "C thap nhat trong ba locus" (4/8) xuong
+     "C thap hon A o ca bon nguong va ca hai cach dem" (8/8), va noi thang
+     rang thu tu B so C khong on dinh nen khong tuyen bo nao dua vao no.
+  c) Limitations nguong 50: them cau khai bao trong so va neu ro cap A so C
+     la cap dung duoi ca hai cach.
+
+### Bai hoc ghi lai
+1. Mot con so co trong so ma khong khai bao thi nguoi doc se hieu thanh so
+   dem. Moi ti le phai noi ro trong so theo cai gi.
+2. Khi hai cach do cho thu tu KHAC NHAU, do chua chac la nhieu. Huong lech
+   mang thong tin: no cho biet nhom nam ngoai la nhom nang hay nhe ve trong
+   so. Doc huong lech truoc khi goi no la nhieu.
+3. Kiem do nhay phai kiem MOI gia tri da chay, khong chi gia tri da in ra.
+   Lan nay T=100 bi bo sot vi README khong in no.
+4. Mot tuyen bo dang "X la cai nhat trong ba" yeu hon han dang "X thap hon
+   Y". Truoc khi viet dang superlative, dem xem no dung bao nhieu o.
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+## Chang 9.3 -- MUC 3: khoi Reproducing
+
+### Tu doc ma, khong doc mo ta
+Doc toan van 5 script .sh (01, 02, 03, 04, 05) thay vi tin bang liet ke.
+Ly do: MUC 3 la mo ta HANH VI, khong phai con so, nen khong co cach kiem nao
+ngoai mo ma ra doc. Day cung la cho da sai mot lan trong du an (gan nguong 50
+cho O'Donnell et al. 2020 ma chua doc bai).
+
+### Khoi Reproducing cu KHONG dut o cho duoc neu ban dau
+Mot nhan dinh can bac bo: "02_filter.sh CHI chay fastp", va "lam theo khoi
+nay se chay fastp roi nhay toi 06_gather.py, khong co gi de gop".
+KHONG DUNG. 02_filter.sh dong 16 la:  bash scripts/05_run_all.sh
+Script do goi 05 o dong cuoi, nen chay 02 thi THAT SU chay fastp roi 303 lan
+OptiType -- dung nhu README mo ta. Khoi Reproducing cu KHONG dut o cho do.
+
+### Nhung moi lo do dung, vi ly do khac
+README khong sai su that, no CHE MOT PHU THUOC. Ba he qua that:
+  1. N=20000 va SEEDS="100 200 300" dat o 05_run_all.sh dong 5-6. README noi
+     nhieu ve viec chon 20.000 cap read nhung nguoi doc muon doi thi khong
+     biet mo file nao.
+  2. Muon chay lai chi phan typing thi khong co duong. 05_run_all.sh co san
+     resume (dong 14-16) ma README khong chi.
+  3. 01_fetch.sh dong 22-31 CUNG chay fastp, dung cung vong nhu 02_filter.sh.
+     Nen "01 tai, 02 loc" la sai: 01 = tai + kiem toan ven + loc,
+     02 = loc lai (bo qua cai da xong) + typing.
+
+### XEP LAI muc nghiem trong
+Sau script thieu la dung, nhung cai nang nhat KHONG phai 05_run_all.sh:
+  12_anonymize.py   -- sinh ra public/, thu ma Repository layout mo ta la san
+                       pham cong bo. Lam theo khoi cu thi public/ KHONG BAO GIO
+                       ton tai. => NANG NHAT, va la cho de bi bo sot nhat.
+  09b_beta_summary  -- 09_beta_experiment.sh CO trong khoi, script tong hop cua
+                       no KHONG. Chay thi nghiem roi bo do.
+  05_run_all.sh     -- chay duoc qua 02, nhung tham so bi che.
+  03_ladder + 03b   -- sinh cac con so chi phi README dang trich.
+  04_seedtest.sh    -- grep README: khong dong nao trich results/seedtest/.
+
+### Thi nghiem beta KHONG phai phu
+grep README ra: dong 27, ca muc "### The --beta trade-off" (dong 137-167, hai
+bang), dong 288 va 302. Nen 09 va 09b phai o DUONG CHINH. Du tinh ban dau
+la xep chung vao nhom tuy chon -- sai, da sua truoc khi de xuat.
+
+### Hai con so trong Methods
+1. "4.6x the reads" -- DA DO THAT. Mau nho nhat sau fastp (SRR11212911) co
+   91.801 cap read; 91801/20000 = 4.59 -> 4.6. DUNG.
+   Nhung README in 96.030 (read THO) o dong 80, nen nguoi doc tu chia se ra
+   4.80. Hai con so dung hai don vi ma README khong noi. Da them menh de
+   "(91,801 cleaned pairs against 20,000)".
+   LOI PHUONG PHAP o MUC 1: da bao "4.6x reads = 4.6000 ok" voi phep kiem
+   (20000 x 4.6)/20000 -- MOT HANG DANG THUC, khong kiem gi ca, luon ra 4.6
+   bat ke su that. Phep kiem vo nghia ma bao ok.
+2. "using all reads took 15m25s and 4.44 GB peak RAM" -- KHONG ra tu script
+   nao trong repo. 03_ladder.sh co LEVELS="2000 5000 10000 20000 40000", va
+   ls results/ladder/ chi co dung 5 muc do x 3 mau = 15 lan chay. Toan bo
+   read la 91.801 cap, gap hon doi muc cao nhat cua ladder.
+   Ma day lai la con so README dung de bien minh cho ca quyet dinh subsample.
+   Da them menh de noi thang: do trong mot lan chay rieng, khong script nao
+   tai tao duoc.
+
+### Tong ke: ca 18 script deu co cho
+  duong chinh Phan I : 01, 05, 06, 07, 08, 09, 09b, 10, 12   (9)
+  Phan II            : 11, 13, 14, 15, 16                    (5)
+  do chi phi         : 03, 03b                               (2)
+  khong o duong nao  : 02, 04  -- co giai thich tai sao       (2)
+Khong con script nao trong repo ma README khong nhac ten.
+
+### Bai hoc ghi lai
+1. Mo ta hanh vi chi kiem duoc bang cach doc ma. Khong co phep tinh nao thay
+   the duoc, khac han MUC 1 va MUC 2.
+2. Cong cu quet tu khoa tu viet cho ket qua sai hai lan trong mot lan chay:
+   - DUONG TINH GIA: 01_fetch.sh va 02_filter.sh bao "goi fastp" vi chuoi
+     "fastp" nam trong TEN THU MUC logs/fastp, khong phai lenh goi.
+   - AM TINH GIA: 05_run_all.sh bao khong goi OptiType, vi no goi
+     "optitype run" CHU THUONG dang lenh con, con regex tim chu hoa.
+   Phat hien duoc nho mot mau thuan so hoc (06_gather.py noi "303 ket qua" ma
+   khong script nao co ve sinh ra chung), khong nho su can than.
+   => Quet ma bang tu khoa thi dung -i, va KET QUA RONG nghia la "regex khong
+      khop", KHONG phai "script khong goi".
+3. Mot phep kiem co the "dat" ma khong kiem gi ca neu hai ve cua no cung xuat
+   phat tu mot con so. Phep kiem phai lay so tu NGUON DOC LAP voi con so dang
+   kiem. (4.6x la vi du: kiem bang 20000x4.6/20000 thi vo nghia; kiem bang
+   cach dem read trong file .fq.gz thi moi co nghia.)
+4. Mot con so trich trong README ma khong script nao sinh ra duoc la mot lo
+   hong tai tao, du con so do dung. Noi thang con hon de nguoi doc di tim
+   script khong ton tai.
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+## Chang 9.4 -- MUC 4: dinh vi so voi Atkins 2024 va Glynn 2025
+
+### Da TU DOC toan van ca hai bai, khong qua tom tat cua ai
+Quy tac Phan 3A cua bao cao Chang 8: khong trich khi chua doc. Lan nay lam
+dung. Hai bai doc tu ban full text:
+  Atkins TK, Solanki A, Vasmatzis G, Cornette J, Riedel M. Front Immunol.
+    2024;14:1288105. doi:10.3389/fimmu.2023.1288105
+  Glynn E, Ghersi D, Singh M. PNAS 2025;122(8):e2405106122.
+    doi:10.1073/pnas.2405106122
+
+### Atkins 2024 -- hai diem can tinh chinh
+Xac nhan tung diem:
+  nguoi Viet          : 5.1% (A), 27.7% (B), 12.1% (C), 33.6% (DRB1)
+  chau Au da trang    : 0.4%, 0.9%, 0.6%, 2.6%
+  8 allele moi        : 7 class I + DRB1*12:02, KHONG co HLA-B nao
+  7 allele class I    : A*24:07, A*34:01, A*34:02, A*36:01,
+                        C*03:02, C*04:03, C*14:03
+  danh gia tren       : ELUTED LIGAND. Ho noi thang "did not perform any
+                        experiments to characterize the model's ability to
+                        predict binding affinity"
+TINH CHINH 1: ket luan cua ho KHONG phai "khong co
+  hieu ung". Class I moi hieu nang CAO HON trung binh, class II moi THAP HON,
+  va CA HAI khac biet deu CO Y NGHIA THONG KE. Ho danh gia do lon qua nho de
+  dang ke. "Hieu ung co nhung nho", khong phai "khong co".
+TINH CHINH 2: du lieu eluted ligand ho dung lay tu
+  Sarkizova et al. -- dung bai README nay dang dan o Result 3.
+
+### Glynn 2025 -- day moi la bai nang
+Trung lap DANG KE voi Phan II, va do tot hon (6.59 trieu nguoi):
+  ti le pseudosequence CO du lieu binding: A 5.6%, B 5.1%, C 2.4%
+  ~87% pseudosequence class I khong co du lieu binding nao
+  benh nhan TCGA ghi la White co du lieu NHIEU HON CO Y NGHIA so voi Black,
+    Asian, Native Hawaiian/Pacific Islander
+  train set: 43.626 BA so 378.039 MA + 518.573 SA (EL)
+  expected PPV thap nhat o HLA-C
+Doi chieu voi repo:
+  hieu ung locus     -> Result 1 va Result 3 cua repo do cung dieu nay
+  hieu ung quan the  -> Result 2 (Spearman +0.57 den +0.82) do cung dieu nay
+  87% ngoai suy      -> Result 4 va phan tich khoang cach pseudosequence
+Glynn KHONG co nguoi Viet (gop vao "Asian and Pacific Islander").
+Glynn DEM rieng BA va EL nhung KHONG bao cao hieu nang tach theo loai du lieu.
+
+### HAI BAY SO TRUNG -- quan trong nhat cua muc nay
+1. 2.4% cua Glynn = ti le PSEUDOSEQUENCE HLA-C co du lieu binding.
+   2.4% cua repo  = ti le PHEP DO BA thuoc HLA-C.
+   HAI DAI LUONG KHAC NHAU TINH CO TRUNG SO. Da viet mot cau trong README
+   noi thang dieu nay, de nguoi doc khong tu ghep.
+2. 33.6% cua Atkins = ti le CA NHAN Viet mang allele DRB1 thieu du lieu.
+   33% cua repo     = ti le ALLELE class I (15/46) vang mat khoi bang
+                      MHCflurry.
+   Cung la hai dai luong khac nhau trung so. Khac predictor, khac mau so,
+   khac locus. KHONG duoc dat canh nhau.
+
+### Giao diem allele -- lien he truc tiep giua hai cong trinh
+4 trong 7 allele class I Atkins danh gia CO trong cohort Kinh:
+   A*24:07  AF 0.02970  k=6
+   A*34:01  AF 0.01485  k=3
+   C*03:02  AF 0.08911  k=18
+   C*04:03  AF 0.07426  k=15
+Hai allele C cong lai = 33/202 nhiem sac the (16.3%) cua locus C. Khong phai
+allele ben le.
+Khong co trong cohort: A*34:02, A*36:01, C*14:03.
+LUU Y: C*14:02 CO trong cohort (AF 0.00495) nhung Atkins test C*14:03 --
+allele khac, de lan.
+
+### Ra soat tuyen bo ve chat luong du doan: README SACH, khong can sua
+Quet 7 tu khoa (degrad, less accurate, worse, unreliab, quality of, accuracy,
+practical concern) tren toan README: chi mot dong trung, la "Stability is not
+accuracy" o Limitations -- cau do noi ve do chinh xac TYPING, khong phai chat
+luong du doan peptide-MHC.
+=> README khong chua tuyen bo "gap lam giam chat luong du doan". No da duoc
+   viet dung pham vi tu dau: Result 4 noi thang "The statement is about
+   direct evidence, not about whether output is produced."
+=> Cau hoi "lam diu hay giu nguyen tuyen bo" phan lon khong con. Khong co tuyen bo nao can lam diu. Cai thieu la hai viec khac:
+   thua nhan y van di truoc, va noi ro "dem du lieu khong phai do hieu nang".
+
+### Da sua
+  A) dau Phan II: doan dinh vi. Noi thang "What follows is not a new
+     disparity", kem con so cua ca hai bai, kem cau phan biet hai dai luong
+     2.4%.
+  B) cuoi Result 3: Atkins do tren EL, dung assay ma phan tich nay thay
+     KHONG thieu; 4 allele giao diem kem AF; va cau tu gioi han pham vi
+     "this analysis counts how much data exists, not how well a model
+     performs on it".
+  C) References: them Atkins 2024 va Glynn 2025 sau Sarkizova.
+  D) tom tat dau README: them "Both are documented elsewhere (Glynn et al.
+     2025; Atkins et al. 2024); what is added here is a split by assay type."
+
+Ly do them (D) du khong ai yeu cau: doan tom tat dau README la
+thu Thay Minh doc truoc tien. Neu no tuyen bo hai hieu ung nhu phat hien moi
+ma khong nhac y van, thi do dung la cho phoi nhat, va sua doan Phan II o duoi
+khong che duoc.
+
+### Danh gia tinh moi -- da ha bot, co y
+Phan II KHONG moi o hai ket qua lon nhat. Hieu ung locus va hieu ung quan the
+deu da co trong Glynn 2025, do tot hon.
+Con lai la cua repo:
+  1. Phan biet BA so EL tren CUNG tap allele, CUNG quan the (Result 3).
+     Glynn dem rieng nhung khong bao cao hieu nang tach theo loai. Atkins
+     danh gia CHI tren EL va tu noi khong kiem BA. Nen cau hoi "vi sao mot
+     danh gia dua tren EL lai khong thay hieu ung, trong khi thieu hut nam o
+     BA?" khong bai nao tra loi.
+  2. Quan the Kinh cu the, typing do phan giai cao. Glynn khong co nguoi
+     Viet; Atkins co nhung tu du lieu hien tuy My.
+  3. Khoang cach pseudosequence kem phan tich do nhay 4 nguong. Glynn uoc
+     luong hieu nang bang MHCPerf; repo do khoang cach Hamming. Bo sung
+     nhau, khong trung.
+Ha tuyen bo tinh moi LA viec nen lam: hoi dong hoac nguoi huong dan biet hai
+bai nay se nghi toi chung ngay. Dinh vi dung gay an tuong hon han tuyen bo
+moi roi bi hoi lai.
+
+### Bai hoc ghi lai
+1. Phep kiem "tong AF ~ 3.0" KHONG xac thuc duoc nguon. Mot ban kinh_af.tsv
+   cu chi co 74 allele 2-truong (that: 85) van qua sach: moi AF la boi so
+   chinh xac cua 1/202 va moi locus cong dung 202. Phep kiem do bat duoc hang
+   THIEU hoac NHAN DOI trong cung mot lan trich xuat, KHONG phan biet duoc
+   hai lan trich xuat khac nhau.
+   => Them mot phep kiem nua: DEM SO ALLELE, khong chi cong AF.
+2. Suyt mac loi cung ho MUC 1 o dang khac: dinh viet "C*03:02 o tan suat
+   0.089, allele HLA-C pho bien thu tu" -- tinh tren dung cai file vua chung
+   minh khong tin duoc. MUC 1 la tinh tren GIA TRI DA LAM TRON; lan nay la
+   tinh tren NGUON CHUA XAC THUC. Cung mot goc: dung so ma khong truy nguon.
+3. Khi hai nghien cuu bao cung mot con so, kiem DAI LUONG truoc khi vui. Hai
+   lan trong muc nay (2.4% va 33.6%) deu la trung so chu khong phai trung
+   ket qua. Mot README dat chung canh nhau se bi bat ngay.
+4. Mot bai bao noi "khong tim thay bang chung" khong co nghia la "khong co
+   hieu ung". Atkins tim thay hieu ung CO Y NGHIA THONG KE o ca hai huong,
+   roi danh gia do lon qua nho. Trich "ho khong tim thay gi" la trich sai.
+--------------------------------------------------------------------
+
+--------------------------------------------------------------------
+## Chang 9.5 -- MUC 5: kiem dinh hoan vi cho cac tuong quan Spearman
+
+### Tu viet script, tinh lai tu dau
+Viet scripts/17_permutation_test.py, tinh lai rho TU DAU (khong dung lai
+logic script 15), 10.000 hoan vi moi o, hat giong 100.
+
+### Tai tao: 12/12 o KHOP bang Spearman cua README
+Script 17 va script 15 doc lap xac nhan nhau. Script 17 co co che tu dung:
+neu lech bat ky o nao thi in ro va KHONG ghi file ket qua. Da test co che do
+tren du lieu mock -- no phat hien lech ca 12 o va tu choi ghi file.
+
+### Xac thuc phan hoan vi o BON muc (truoc khi chay tren du lieu that)
+  1. xep_hang va spearman doi chieu dap an tinh tay:
+     [1..5] vs [1..5]      -> +1.000
+     [1..5] vs [5..1]      -> -1.000
+     [1..5] vs [2,1,4,3,5] -> +0.800  (tinh tay: 8/10)
+     [1,2,3,4] vs [1,1,2,2]-> +0.894  (tinh tay: 4/sqrt(20))
+     bat bien qua bien doi don dieu: rho(x,y) = rho(x,log y) = rho(x,y^3)
+  2. tuong quan hoan toan -> p = gia tri san 1/(N+1)
+  3. khong co lien he      -> p lon, rho nam TRONG khoang rong
+  4. do lech chuan phan phoi rong = 0.1850 so voi cong thuc giai tich
+     1/sqrt(n-1) = 0.1857 cho n=30. KHOP toi ba chu so.
+Muc 4 la xac thuc manh nhat: neu phep lay mau hoan vi sai thi gia tri do
+khong khop cong thuc giai tich duoc.
+
+### Loi phuong phap: hai gia tri ky vong trong phep kiem don vi
+Viet ky vong xep_hang([3,1,2]) = [2,1,3] -- SAI, dung la [3,1,2].
+Viet ky vong spearman([1,2,3,4],[1,1,2,2]) = 0.9487 -- SAI, dung la 0.8944
+(0.9487 = 3/sqrt(10), mot phep tinh khac nho lan).
+Ham DUNG o ca hai ca; gia tri ky vong sai. Da tinh tay bang phan so chinh xac
+de xac dinh ben nao sai.
+Day la lan thu NAM trong dot nay khang dinh truoc khi do.
+CAI CUU: dung quy uoc nguoi dung dat ra -- IN GIA TRI THU DUOC CANH GIA TRI
+KY VONG de doi chieu bang mat, KHONG dung assert. Neu dung assert thi chi
+thay "that bai" va rat co the da di "sua" cai ham dang dung.
+
+### KET QUA -- p thay doi hai bac do lon theo nguong
+Neu chi chay k >= 1 (nguong de nhat) thi ca bon o deu cho "p < 0,0001".
+Chay ca 12 o:
+            k>=1     k>=2     k>=3
+  gop     0.0001   0.0001   0.0001
+  HLA-A   0.0001   0.0023   0.0190   <-- o mong nhat
+  HLA-B   0.0001   0.0001   0.0060
+  HLA-C   0.0001   0.0009   0.0034
+O k>=3 HLA-A cho p = 0.019 -- van duoi 0.05 nhung LON HON HAI BAC DO LON so
+voi con so o k >= 1. Neu README chi viet "p < 0.0001"
+thi se la noi qua o 5 trong 9 o.
+
+Khoang 95% cua phan phoi rong rong ra dung nhu phai:
+  n=85 [-0.216,+0.219]   n=41 [-0.311,+0.311]   n=25 [-0.403,+0.396]
+  n=19 [-0.461,+0.453]   n=13 [-0.545,+0.559]
+O n=13, ngau nhien thuan du suc tao ra |rho| toi 0.56 -- chinh la ly do muc
+han che do ton tai. Ca 12 o quan sat deu nam ngoai khoang rong, nhung o mong
+nhat la HLA-A k>=3: quan sat +0.605 so voi bien tren +0.519, du 0.086.
+
+Khoi dong hang: 23.1% den 36.8%. O k>=1 gop la 32.9% = dung 28/85, xac nhan
+can cu cua muc han che "Tied ranks" dang co.
+
+### "Group sizes are 13 to 41 per locus" -- README DUNG
+  k>=1  A 25  B 41  C 19
+  k>=2  A 19  B 28  C 16
+  k>=3  A 15  B 22  C 13
+min = 13 (HLA-C o k>=3), max = 41 (HLA-B o k>=1). Dem chi o k>=1 thi thay
+min la 19; con so 13 den tu nguong chat nhat. KHONG CAN SUA GI.
+
+### LOI KHAI NIEM trong chinh README, da sua
+Cau cu: "A permutation test would give confidence intervals without
+additional dependencies".
+SAI VE PHUONG PHAP. Hoan vi kiem GIA THUYET RONG; no KHONG cho khoang tin
+cay. Muon khoang tin cay cho rho thi phai bootstrap. Da sua trong e2.
+
+### KHONG dong han muc han che, chi thu hep
+Mot de nghi la "dong muc han che No uncertainty estimates". Da chi THU HEP.
+Ly do: hoan vi tra loi "co phai ngau nhien khong", KHONG tra loi "rho that
+nam trong khoang nao". Hai cau hoi khac nhau; cau thu hai can bootstrap.
+Neu README viet "da co uoc luong bat dinh" thi trong phong van se bi hoi
+"khoang tin cay cua rho la bao nhieu" va khong co cau tra loi. Viet dung cai
+da lam -- da kiem gia thuyet rong, chua chan khoang -- thi tra loi duoc, va
+con neu duoc buoc tiep theo.
+
+### Da sua
+  e1) Result 2: them doan ket qua hoan vi, kem khoang p 0.0001-0.019, o mong
+      nhat, luu y cac phep kiem long nhau nen khong hieu chinh boi so duoc,
+      va viec hoan vi xu ly dung dong hang.
+  e2) Limitations: thay "No uncertainty estimates on the correlations" bang
+      "The correlations are tested but not bounded" -- va sua luon loi khai
+      niem ve confidence interval.
+  e3) Limitations muc dong hang: them cau noi ro dong hang KHONG anh huong
+      p-value hoan vi, chi anh huong GIA TRI cua rho.
+  e4) Reproducing: them script 17.
+
+### Bai hoc ghi lai
+1. Uoc luong p kieu cong mot: p = (1 + so lan vuot)/(1 + N). Voi N=10.000 va
+   0 lan vuot, p = 0.0001, KHONG phai 0. Mot kiem dinh N lan khong the chung
+   minh p nho hon 1/(N+1). Viet "p < 0.0001" khi chi chay 10.000 lan la noi
+   qua.
+2. Kiem do nhay phai chay MOI nguong, khong chi nguong de nhat. Tab chien
+   luoc chay k>=1 va ket luan "tat ca xa ngoai khoang rong"; o k>=3 thi p
+   lon hon hai bac do lon. Lan thu hai trong dot nay bo sot cac gia tri khong
+   duoc in ra (lan truoc la T=100 o MUC 2).
+3. Hoan vi xu ly dong hang dung vi no xao tron chinh vecto hang. Cong thuc
+   tiem can cua Spearman gia dinh khong dong hang, nen voi 23-37% dong hang
+   no cho p sai. Chon phep kiem theo cau truc du lieu, khong theo tien le.
+4. Mot de nghi "dong muc han che nay" can kiem xem phep do moi co THAT SU
+   tra loi dung cau hoi cua muc han che do khong. O day khong: no tra loi
+   mot cau hoi lan can. Thu hep dung hon la dong.
+--------------------------------------------------------------------

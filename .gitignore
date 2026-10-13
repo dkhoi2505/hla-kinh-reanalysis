@@ -30,3 +30,5 @@ logs/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+_work/
+docs/_loi_noi_bo.md
