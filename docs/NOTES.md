@@ -1379,3 +1379,55 @@ con neu duoc buoc tiep theo.
    tra loi dung cau hoi cua muc han che do khong. O day khong: no tra loi
    mot cau hoi lan can. Thu hep dung hon la dong.
 --------------------------------------------------------------------
+
+--------------------------------------------------------------------
+## Chang 9.6 -- Tham chieu cheo cu o muc Status
+
+### Van de
+Muc Status liet ke ba viec con mo, dan chieu tu muc Part II limitations:
+  1. "no uncertainty estimates on the correlations"
+  2. "one reference population"
+  3. "the unexplained 0.45% shortfall in the AFND frequencies"
+Muc (1) con tro ve trang thai TRUOC Chang 9.5. Muc han che tuong ung da doi
+thanh "The correlations are tested but not bounded".
+
+### Da xac minh ca ba truoc khi sua
+  (1) muc han che o dong 322: "**The correlations are tested but not
+      bounded.**"  -> Status LECH
+  (2) muc han che o dong 312: "**One reference population.** Germany DKMS
+      stands in for..."  -> Status DUNG
+  (3) muc han che o dong 318: "**AFND frequencies do not sum to 1.** Non-zero
+      frequencies total 0.995 at all three loci..."  -> Status DUNG
+Chi muc (1) can sua.
+
+### Da sua
+  cu : "no uncertainty estimates on the correlations, one reference
+        population, and the unexplained 0.45% shortfall..."
+  moi: "correlations tested but not bounded, one reference population, and
+        the unexplained 0.45% shortfall..."
+Dung dung cum tu cua tieu de muc han che ("tested but not bounded") de nguoi
+doc tim duoc, va bo "the ... are" cho ba muc trong danh sach cung dang cum
+danh tu.
+
+### Quet toan file: chi mot cho lech
+Kiem nam cum tu da bi thay trong 25 phep sua cua dot nay, KHONG phan biet hoa
+thuong:
+  'uncertainty estimate'        -> chi dong 402 (Status), da sua
+  'point estimates only'        -> sach
+  'reach furthest, so the two'  -> sach
+  'data-poor HLA-A alleles'     -> sach
+  'Numbered in execution order' -> sach (da thanh "roughly in execution order")
+25 phep sua, mot cho de lai tham chieu lech.
+
+### Bai hoc ghi lai
+1. Khi thay mot cum tu DAC TRUNG, phai quet cum do tren TOAN FILE sau khi sua.
+   Mot muc khac co the dang tro ve trang thai cu. O day muc Status cach muc
+   han che 80 dong nen khong nam trong tam nhin khi sua.
+2. Dieu kien kiem bang chuoi phai KHONG PHAN BIET HOA THUONG. Phep kiem cua
+   Chang 9.5 dung dang chu hoa dau cau nen bao "ok" trong khi ban chu thuong
+   van con. Mot phep kiem HEP HON van de no dinh kiem thi te hon khong co
+   phep kiem, vi no dung viec tim tiep.
+3. Tai lieu co MUC TOM TAT tro den muc chi tiet thi moi lan sua chi tiet phai
+   kiem lai muc tom tat. Danh sach "viec con mo" la loai de lech nhat, vi no
+   nhac lai noi dung cua cho khac bang tu ngu rieng.
+--------------------------------------------------------------------

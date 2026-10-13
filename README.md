@@ -399,7 +399,7 @@ Raw reads, intermediate files and per-run OptiType outputs are not committed; `s
 
 Objective 1 (typing and comparison) is complete.
 
-Objective 2 (training-data coverage) is complete, with the open items listed under Part II limitations: no uncertainty estimates on the correlations, one reference population, and the unexplained 0.45% shortfall in the AFND frequencies.
+Objective 2 (training-data coverage) is complete, with the open items listed under Part II limitations: correlations tested but not bounded, one reference population, and the unexplained 0.45% shortfall in the AFND frequencies.
 
 **Related work:** [luad-deg-analysis](https://github.com/dkhoi2505/luad-deg-analysis): differential expression in lung adenocarcinoma, including an MHC class I antigen presentation panel.
 
